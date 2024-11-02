@@ -18,7 +18,7 @@ final class WishMakerViewController: UIViewController {
         setView(to: wishMakerView)
     }
     // MARK: - Private methods
-// Этот метод нарушает YAGNI, но этот метод необходим для архитектуры MVC впоследствии
+// This method violates YAGNI, but it's necessary for working with the model in the future according to MVC architecture
 //    private func updateView(with data: MODELNAME) {
 //        wishMakerView.configure(with: data)
 //    }
