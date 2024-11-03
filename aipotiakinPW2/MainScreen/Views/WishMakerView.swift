@@ -64,7 +64,7 @@ class WishMakerView: UIView {
         
         // slidersStack
         static let slidersStackAxis: NSLayoutConstraint.Axis = .vertical
-        static let slidersStackBottomIndent: CGFloat = 40
+        static let slidersStackBottomIndent: CGFloat = 10
         static let slidersStackLeadingIndent: CGFloat = 20
         
         // hexLabel
@@ -122,38 +122,46 @@ class WishMakerView: UIView {
         
         // blueButton
         static let blueButtonBackgroundColor: UIColor = .blue
+        
+        // addWishButton
+        static let addWishButtonBottomIndent: CGFloat = 40
+        static let addWishButtonLeadingIndent: CGFloat = 20
+        static let addWishButtonTitleColor: UIColor = .systemPink
+        static let addWishButtonTitle: String = "My wishes"
     }
     
     // MARK: - Variables
-    private var slidersStackBottomConstraint: NSLayoutConstraint!
+    private var addWishButtonBottomConstraint: NSLayoutConstraint!
     
     // MARK: - UI Components
-    let titleLabel = UILabel()
-    let descriptionLabel = UILabel()
+    private let titleLabel: UILabel = UILabel()
+    private let descriptionLabel: UILabel = UILabel()
     
-    let hideButton = UIButton()
-    let showButton = UIButton()
+    private let hideButton: UIButton = UIButton(type: .system)
+    private let showButton: UIButton = UIButton(type: .system)
     
-    let menuButtonsStack = UIStackView()
-    let menuHexButton = UIButton()
-    let menuPickColorButton = UIButton()
-    let menuRandomColorButton = UIButton()
+    private let menuButtonsStack: UIStackView = UIStackView()
+    private let menuHexButton: UIButton = UIButton(type: .system)
+    private let menuPickColorButton: UIButton = UIButton(type: .system)
+    private let menuRandomColorButton: UIButton = UIButton(type: .system)
     
-    let rgbButtonsStack = UIStackView()
-    let redButton = UIButton()
-    let greenButton = UIButton()
-    let blueButton = UIButton()
+    private let rgbButtonsStack: UIStackView = UIStackView()
+    private let redButton: UIButton = UIButton(type: .system)
+    private let greenButton: UIButton = UIButton(type: .system)
+    private let blueButton: UIButton = UIButton(type: .system)
     
-    let randomColorButton = UIButton()
+    private let randomColorButton: UIButton = UIButton(type: .system)
     
-    let hexDescriptionLabel = UILabel()
-    let hexLabel = UILabel()
+    private let hexDescriptionLabel: UILabel = UILabel()
+    private let hexLabel: UILabel = UILabel()
+    
+    private let addWishButton: UIButton = UIButton(type: .system)
     
     
-    let slidersStack = UIStackView()
-    let sliderRed = CustomSlider(title: Constants.red, min: Constants.sliderMin, max: Constants.sliderMax)
-    let sliderGreen = CustomSlider(title: Constants.green, min: Constants.sliderMin, max: Constants.sliderMax)
-    let sliderBlue = CustomSlider(title: Constants.blue, min: Constants.sliderMin, max: Constants.sliderMax)
+    private let slidersStack: UIStackView = UIStackView()
+    private let sliderRed: CustomSlider = CustomSlider(title: Constants.red, min: Constants.sliderMin, max: Constants.sliderMax)
+    private let sliderGreen: CustomSlider = CustomSlider(title: Constants.green, min: Constants.sliderMin, max: Constants.sliderMax)
+    private let sliderBlue: CustomSlider = CustomSlider(title: Constants.blue, min: Constants.sliderMin, max: Constants.sliderMax)
     
     // MARK: - Lifecycle
     override init(frame: CGRect) {
@@ -230,9 +238,9 @@ class WishMakerView: UIView {
     // Converts RGB values (0.0 to 1.0) to HEX-code (00 - FF)
     private func rgbToHex(red: CGFloat, green: CGFloat, blue: CGFloat) -> String {
         let hexMultiplier: CGFloat = 255
-        let r = Int(red * hexMultiplier)
-        let g = Int(green * hexMultiplier)
-        let b = Int (blue * hexMultiplier)
+        let r: Int = Int(red * hexMultiplier)
+        let g: Int = Int(green * hexMultiplier)
+        let b: Int = Int (blue * hexMultiplier)
         let hexFormat: String = "#%02X%02X%02X"
         return String(format: hexFormat, r, g, b)
     }
@@ -240,11 +248,28 @@ class WishMakerView: UIView {
     private func configureUI() {
         backgroundColor = .white
         
+        configureAddWishButton()
         configureTitle()
         configureSliders()
         configureButtons()
         configureLabels()
         configureRGBButtonsStack()
+    }
+    
+    private func configureAddWishButton() {
+        addSubview(addWishButton)
+        addWishButtonBottomConstraint = addWishButton.pinBottom(to: safeAreaLayoutGuide.bottomAnchor, Constants.addWishButtonBottomIndent)
+        addWishButton.pinCenterX(to: centerXAnchor)
+        addWishButton.pinLeft(to: leadingAnchor, Constants.addWishButtonLeadingIndent)
+        
+        addWishButton.backgroundColor = Constants.buttonBackgroundColor
+        addWishButton.setTitleColor(Constants.addWishButtonTitleColor, for: .normal)
+        addWishButton.setTitle(Constants.addWishButtonTitle, for: .normal)
+        
+        addWishButton.layer.cornerRadius = Constants.buttonCornerRadius
+        addWishButton.layer.borderWidth = Constants.buttonBorderWidth
+        addWishButton.layer.borderColor = Constants.buttonBorderColor
+        addWishButton.addTarget(self, action: #selector(addWishButtonPressed), for: .touchUpInside)
     }
     
     private func configureTitle() {
@@ -315,7 +340,7 @@ class WishMakerView: UIView {
         
         slidersStack.pinCenterX(to: centerXAnchor)
         slidersStack.pinLeft(to: leadingAnchor, Constants.slidersStackLeadingIndent)
-        slidersStackBottomConstraint = slidersStack.pinBottom(to: safeAreaLayoutGuide.bottomAnchor, Constants.slidersStackBottomIndent)
+        slidersStack.pinBottom(to: addWishButton.topAnchor, Constants.slidersStackBottomIndent)
         
         sliderRed.valueChanged = { [weak self] value in
             self?.backgroundColor = UIColor(
@@ -391,9 +416,6 @@ class WishMakerView: UIView {
         
         for button in [menuHexButton, menuPickColorButton, menuRandomColorButton] {
             menuButtonsStack.addArrangedSubview(button)
-            button.addTarget(self, action: #selector(buttonTouchedDown), for: .touchDown)
-            button.addTarget(self, action: #selector(buttonTouchedUp), for: .touchUpInside)
-            button.addTarget(self, action: #selector(buttonTouchedUp), for: .touchUpOutside)
         }
         
         // hideButton
@@ -408,9 +430,6 @@ class WishMakerView: UIView {
         hideButton.layer.cornerRadius = Constants.buttonCornerRadius
         hideButton.layer.borderColor = Constants.buttonBorderColor
         hideButton.layer.borderWidth = Constants.buttonBorderWidth
-        hideButton.addTarget(self, action: #selector(buttonTouchedDown), for: .touchDown)
-        hideButton.addTarget(self, action: #selector(buttonTouchedUp), for: .touchUpInside)
-        hideButton.addTarget(self, action: #selector(buttonTouchedUp), for: .touchUpOutside)
         hideButton.addTarget(self, action: #selector(hideStackView), for: .touchUpInside)
         
         // showButton
@@ -426,9 +445,6 @@ class WishMakerView: UIView {
         showButton.layer.cornerRadius = Constants.buttonCornerRadius
         showButton.layer.borderColor = Constants.buttonBorderColor
         showButton.layer.borderWidth = Constants.buttonBorderWidth
-        showButton.addTarget(self, action: #selector(buttonTouchedDown), for: .touchDown)
-        showButton.addTarget(self, action: #selector(buttonTouchedUp), for: .touchUpInside)
-        showButton.addTarget(self, action: #selector(buttonTouchedUp), for: .touchUpOutside)
         showButton.addTarget(self, action: #selector(showStackView), for: .touchUpInside)
         
         // randomColorButton
@@ -442,9 +458,6 @@ class WishMakerView: UIView {
         // button have the same sizes as stack, so make edges like in stack
         randomColorButton.layer.cornerRadius = Constants.stackCornerRadius
         randomColorButton.addTarget(self, action: #selector(setRandomColor), for: .touchUpInside)
-        randomColorButton.addTarget(self, action: #selector(buttonTouchedDown), for: .touchDown)
-        randomColorButton.addTarget(self, action: #selector(buttonTouchedUp), for: .touchUpInside)
-        randomColorButton.addTarget(self, action: #selector(buttonTouchedUp), for: .touchUpOutside)
         
         randomColorButton.pinCenterX(to: slidersStack.centerXAnchor)
         randomColorButton.pinCenterY(to: slidersStack.centerYAnchor)
@@ -494,10 +507,15 @@ class WishMakerView: UIView {
     
     // MARK: - objc
     @objc
+    private func addWishButtonPressed() {
+        
+    }
+    
+    @objc
     private func hideStackView() {
         UIView.animate(withDuration: Constants.hideMenuAnimationDuration, animations: {
-            let newSlidersStackPosition = self.frame.height
-            self.slidersStackBottomConstraint.constant = newSlidersStackPosition
+            let newAddWishButtonPosition = self.frame.height
+            self.addWishButtonBottomConstraint.constant = newAddWishButtonPosition
             self.showButton.alpha = Constants.maxAlpha
             self.layoutIfNeeded()
             
@@ -511,7 +529,7 @@ class WishMakerView: UIView {
     private func showStackView() {
         UIView.animate(withDuration: Constants.showMenuAnimationDuration, animations: {
             // set slidersStack to default position
-            self.slidersStackBottomConstraint = self.slidersStack.pinBottom(to: self.safeAreaLayoutGuide.bottomAnchor, Constants.slidersStackBottomIndent)
+            self.addWishButtonBottomConstraint = self.addWishButton.pinBottom(to: self.safeAreaLayoutGuide.bottomAnchor, Constants.addWishButtonBottomIndent)
             self.showButton.alpha = Constants.minAlpha
             self.layoutIfNeeded()
             
