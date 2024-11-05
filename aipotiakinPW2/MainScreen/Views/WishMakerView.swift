@@ -8,7 +8,12 @@
 import Foundation
 import UIKit
 
-class WishMakerView: UIView {
+// Протокол делегата для передачи событий
+protocol ViewDelegate: AnyObject {
+    func addWishButtonPressed()
+}
+
+final class WishMakerView: UIView {
     // MARK: - Constants
     private enum Constants {
         // animations
@@ -132,6 +137,7 @@ class WishMakerView: UIView {
     
     // MARK: - Variables
     private var addWishButtonBottomConstraint: NSLayoutConstraint!
+    weak var delegate: ViewDelegate?
     
     // MARK: - UI Components
     private let titleLabel: UILabel = UILabel()
@@ -508,7 +514,7 @@ class WishMakerView: UIView {
     // MARK: - objc
     @objc
     private func addWishButtonPressed() {
-        
+        delegate?.addWishButtonPressed()
     }
     
     @objc

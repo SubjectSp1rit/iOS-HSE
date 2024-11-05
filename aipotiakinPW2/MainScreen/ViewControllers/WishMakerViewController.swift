@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class WishMakerViewController: UIViewController {
+final class WishMakerViewController: UIViewController, ViewDelegate {
     // MARK: - Constants
     private let wishMakerView = WishMakerView()
     
@@ -15,8 +15,15 @@ final class WishMakerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        wishMakerView.delegate = self
         setView(to: wishMakerView)
     }
+    
+    // MARK: - Methods
+    func addWishButtonPressed() {
+        present(WishStoringViewController(), animated: true)
+    }
+    
     // MARK: - Private methods
 // This method violates YAGNI, but it's necessary for working with the model in the future according to MVC architecture
 //    private func updateView(with data: MODELNAME) {
