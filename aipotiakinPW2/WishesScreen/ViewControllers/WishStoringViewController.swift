@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class WishStoringViewController: UIViewController, AddWishCellDelegate, WrittenWishCellDelegate {
+final class WishStoringViewController: UIViewController {
     // MARK: - Constants
     private enum Constants {
         // wishArray
@@ -34,13 +34,80 @@ final class WishStoringViewController: UIViewController, AddWishCellDelegate, Wr
         wishStoringView.configureTableDelegate(self, dataSource: self)
     }
     
-    // MARK: - Methods
+    // MARK: - Private Methods
+    private func setView(to otherView: WishStoringView) {
+        view.addSubview(otherView)
+        otherView.setWidth(view.frame.width)
+        otherView.setHeight(view.frame.height)
+    }
+    
+    private func saveChangesToDefaults() {
+        defaults.set(wishArray, forKey: Constants.wishesKey)
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension WishStoringViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return Constants.numberOfSections
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return 1
+        case 1:
+            return wishArray.count
+        default:
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.section {
+        case 0:
+            // AddWishCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: AddWishCell.reuseID, for: indexPath) 
+            
+            guard let wishCell = cell as? AddWishCell else { return cell }
+            wishCell.delegate = self
+            wishCell.selectionStyle = .none
+            
+            return wishCell
+        case 1:
+            // WrittenWishCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: WrittenWishCell.reuseID, for: indexPath)
+            
+            guard let wishCell = cell as? WrittenWishCell else { return cell }
+            wishCell.delegate = self
+            wishCell.selectionStyle = .none
+            
+            wishCell.configure(with: wishArray[indexPath.row])
+            
+            return wishCell
+        default:
+            fatalError("Unkown section")
+        }
+    }
+}
+
+// MARK: - UITableViewDelegate
+extension WishStoringViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    }
+}
+
+// MARK: - AddWishCellDelegate
+extension WishStoringViewController: AddWishCellDelegate {
     func didAddWishButtonPressed(with text: String) {
         wishArray.append(text)
         saveChangesToDefaults()
         wishStoringView.reloadTable()
     }
-    
+}
+
+// MARK: - WrittenWishCellDelegate
+extension WishStoringViewController: WrittenWishCellDelegate {
     func didEditWishButtonPressed(with text: String) {
         let alertController = UIAlertController(title: "Edit Wish", message: nil, preferredStyle: .alert)
         alertController.addTextField { textField in
@@ -84,65 +151,5 @@ final class WishStoringViewController: UIViewController, AddWishCellDelegate, Wr
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true, completion: nil)
-    }
-    
-    // MARK: - Private Methods
-    private func setView(to otherView: WishStoringView) {
-        view.addSubview(otherView)
-        otherView.setWidth(view.frame.width)
-        otherView.setHeight(view.frame.height)
-    }
-    
-    private func saveChangesToDefaults() {
-        defaults.set(wishArray, forKey: Constants.wishesKey)
-    }
-}
-
-// MARK: - UITableViewDataSource
-extension WishStoringViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return Constants.numberOfSections
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return 1
-        case 1:
-            return wishArray.count
-        default:
-            return 0
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch indexPath.section {
-        case 0:
-            // AddWishCell
-            let cell = tableView.dequeueReusableCell(withIdentifier: AddWishCell.reuseID, for: indexPath) 
-            
-            guard let wishCell = cell as? AddWishCell else { return cell }
-            wishCell.delegate = self
-            
-            return wishCell
-        case 1:
-            // WrittenWishCell
-            let cell = tableView.dequeueReusableCell(withIdentifier: WrittenWishCell.reuseID, for: indexPath)
-            
-            guard let wishCell = cell as? WrittenWishCell else { return cell }
-            wishCell.delegate = self
-            
-            wishCell.configure(with: wishArray[indexPath.row])
-            
-            return wishCell
-        default:
-            fatalError("Unkown section")
-        }
-    }
-}
-
-// MARK: - UITableViewDelegate
-extension WishStoringViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     }
 }

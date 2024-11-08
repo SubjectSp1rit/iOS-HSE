@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class WishMakerViewController: UIViewController, ViewDelegate {
+final class WishMakerViewController: UIViewController {
     // MARK: - Constants
     private let wishMakerView = WishMakerView()
     
@@ -17,11 +17,6 @@ final class WishMakerViewController: UIViewController, ViewDelegate {
         
         wishMakerView.delegate = self
         setView(to: wishMakerView)
-    }
-    
-    // MARK: - Methods
-    func addWishButtonPressed() {
-        present(WishStoringViewController(), animated: true)
     }
     
     // MARK: - Private methods
@@ -34,5 +29,16 @@ final class WishMakerViewController: UIViewController, ViewDelegate {
         view.addSubview(otherView)
         otherView.setWidth(view.frame.width)
         otherView.setHeight(view.frame.height)
+    }
+}
+
+// MARK: - WishMakerViewDelegate
+extension WishMakerViewController: WishMakerViewDelegate {
+    func didAddWishButtonPressed() {
+        let wishStoringViewController: WishStoringViewController = WishStoringViewController()
+        
+        //wishStoringViewController.modalPresentationStyle = .fullScreen
+        
+        present(wishStoringViewController, animated: true)
     }
 }

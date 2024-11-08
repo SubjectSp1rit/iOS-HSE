@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 
 // Протокол делегата для передачи событий
-protocol ViewDelegate: AnyObject {
-    func addWishButtonPressed()
+protocol WishMakerViewDelegate: AnyObject {
+    func didAddWishButtonPressed()
 }
 
 final class WishMakerView: UIView {
@@ -137,7 +137,7 @@ final class WishMakerView: UIView {
     
     // MARK: - Variables
     private var addWishButtonBottomConstraint: NSLayoutConstraint!
-    weak var delegate: ViewDelegate?
+    weak var delegate: WishMakerViewDelegate?
     
     // MARK: - UI Components
     private let titleLabel: UILabel = UILabel()
@@ -223,13 +223,23 @@ final class WishMakerView: UIView {
         default:
             fatalError("Unhandled case in switch updateType")
         }
-        self.backgroundColor = UIColor(
+        let newBackgroundColor: UIColor = UIColor(
             red: CGFloat(self.sliderRed.slider.value),
             green: CGFloat(self.sliderGreen.slider.value),
             blue: CGFloat(self.sliderBlue.slider.value),
             alpha: Constants.backgroundAlphaTransparency
         )
+        self.backgroundColor = newBackgroundColor
         updateHexLabelCode()
+    }
+    
+    func getCurrentBackgroundColor() -> UIColor {
+        return UIColor(
+            red: CGFloat(self.sliderRed.slider.value),
+            green: CGFloat(self.sliderGreen.slider.value),
+            blue: CGFloat(self.sliderBlue.slider.value),
+            alpha: Constants.backgroundAlphaTransparency
+        )
     }
     
     // Updates hexLabel hex-code value to actual
@@ -514,7 +524,7 @@ final class WishMakerView: UIView {
     // MARK: - objc
     @objc
     private func addWishButtonPressed() {
-        delegate?.addWishButtonPressed()
+        delegate?.didAddWishButtonPressed()
     }
     
     @objc
