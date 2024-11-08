@@ -10,6 +10,13 @@ import UIKit
 
 final class WishStoringView: UIView {
     // MARK: - Constants
+    private enum Constants {
+        // table
+        static let tableBackgroundColor: UIColor = .lightGray
+        static let tableCornerRadius: CGFloat = 20
+        static let tableIndent: CGFloat = 20
+    }
+    
     private let table: UITableView = UITableView(frame: .zero)
     
     // MARK: - Lifecycle
@@ -29,6 +36,10 @@ final class WishStoringView: UIView {
         table.dataSource = dataSource
     }
     
+    func reloadTable() {
+        table.reloadData()
+    }
+    
     // MARK: - Private methods
     private func configureUI() {
         configureTable()
@@ -36,12 +47,13 @@ final class WishStoringView: UIView {
     
     private func configureTable() {
         addSubview(table)
-        table.backgroundColor = .red
+        table.backgroundColor = Constants.tableBackgroundColor
         table.separatorStyle = .none
-        table.layer.cornerRadius = 20
+        table.layer.cornerRadius = Constants.tableCornerRadius
         
-        table.pin(to: self, 20)
+        table.pin(to: self, Constants.tableIndent)
         
-        table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        table.register(WrittenWishCell.self, forCellReuseIdentifier: WrittenWishCell.reuseID)
+        table.register(AddWishCell.self, forCellReuseIdentifier: AddWishCell.reuseID)
     }
 }
