@@ -130,14 +130,20 @@ final class WishMakerView: UIView {
         static let blueButtonBackgroundColor: UIColor = .blue
         
         // addWishButton
-        static let addWishButtonBottomIndent: CGFloat = 40
+        static let addWishButtonBottomIndent: CGFloat = 10
         static let addWishButtonLeadingIndent: CGFloat = 20
         static let addWishButtonTitleColor: UIColor = .systemPink
         static let addWishButtonTitle: String = "My wishes"
+        
+        // scheduleWishButton
+        static let scheduleWishButtonBottomIndent: CGFloat = 40
+        static let scheduleWishButtonLeadingIndent: CGFloat = 20
+        static let scheduleWishButtonTitleColor: UIColor = .systemPink
+        static let scheduleWishButtonTitle: String = "Schedule wish granting"
     }
     
     // MARK: - Variables
-    private var addWishButtonBottomConstraint: NSLayoutConstraint!
+    private var scheduleWishButtonConstraint: NSLayoutConstraint!
     weak var delegate: WishMakerViewDelegate?
     
     // MARK: - UI Components
@@ -163,6 +169,7 @@ final class WishMakerView: UIView {
     private let hexLabel: UILabel = UILabel()
     
     private let addWishButton: UIButton = UIButton(type: .system)
+    private let scheduleWishButton: UIButton = UIButton(type: .system)
     
     
     private let slidersStack: UIStackView = UIStackView()
@@ -264,6 +271,7 @@ final class WishMakerView: UIView {
     
     private func configureUI() {
         backgroundColor = .white
+        configureScheduleWishButton()
         configureAddWishButton()
         configureTitle()
         configureSliders()
@@ -274,7 +282,7 @@ final class WishMakerView: UIView {
     
     private func configureAddWishButton() {
         addSubview(addWishButton)
-        addWishButtonBottomConstraint = addWishButton.pinBottom(to: safeAreaLayoutGuide.bottomAnchor, Constants.addWishButtonBottomIndent)
+        addWishButton.pinBottom(to: scheduleWishButton.topAnchor, Constants.addWishButtonBottomIndent)
         addWishButton.pinCenterX(to: centerXAnchor)
         addWishButton.pinLeft(to: leadingAnchor, Constants.addWishButtonLeadingIndent)
         
@@ -286,6 +294,22 @@ final class WishMakerView: UIView {
         addWishButton.layer.borderWidth = Constants.buttonBorderWidth
         addWishButton.layer.borderColor = Constants.buttonBorderColor
         addWishButton.addTarget(self, action: #selector(addWishButtonPressed), for: .touchUpInside)
+    }
+    
+    private func configureScheduleWishButton() {
+        addSubview(scheduleWishButton)
+        scheduleWishButtonConstraint = scheduleWishButton.pinBottom(to: safeAreaLayoutGuide.bottomAnchor, Constants.scheduleWishButtonBottomIndent)
+        scheduleWishButton.pinCenterX(to: centerXAnchor)
+        scheduleWishButton.pinLeft(to: leadingAnchor, Constants.scheduleWishButtonLeadingIndent)
+        
+        scheduleWishButton.backgroundColor = Constants.buttonBackgroundColor
+        scheduleWishButton.setTitleColor(Constants.scheduleWishButtonTitleColor, for: .normal)
+        scheduleWishButton.setTitle(Constants.scheduleWishButtonTitle, for: .normal)
+        
+        scheduleWishButton.layer.cornerRadius = Constants.buttonCornerRadius
+        scheduleWishButton.layer.borderWidth = Constants.buttonBorderWidth
+        scheduleWishButton.layer.borderColor = Constants.buttonBorderColor
+        //addWishButton.addTarget(self, action: #selector(addWishButtonPressed), for: .touchUpInside)
     }
     
     private func configureTitle() {
@@ -532,8 +556,8 @@ final class WishMakerView: UIView {
     @objc
     private func hideStackView() {
         UIView.animate(withDuration: Constants.hideMenuAnimationDuration, animations: {
-            let newAddWishButtonPosition = self.frame.height
-            self.addWishButtonBottomConstraint.constant = newAddWishButtonPosition
+            let newScheduleWishButtonPosition = self.frame.height
+            self.scheduleWishButtonConstraint.constant = newScheduleWishButtonPosition
             self.showButton.alpha = Constants.maxAlpha
             self.layoutIfNeeded()
             
@@ -547,7 +571,7 @@ final class WishMakerView: UIView {
     private func showStackView() {
         UIView.animate(withDuration: Constants.showMenuAnimationDuration, animations: {
             // set slidersStack to default position
-            self.addWishButtonBottomConstraint = self.addWishButton.pinBottom(to: self.safeAreaLayoutGuide.bottomAnchor, Constants.addWishButtonBottomIndent)
+            self.scheduleWishButtonConstraint = self.scheduleWishButton.pinBottom(to: self.safeAreaLayoutGuide.bottomAnchor, Constants.scheduleWishButtonBottomIndent)
             self.showButton.alpha = Constants.minAlpha
             self.layoutIfNeeded()
             
