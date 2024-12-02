@@ -18,6 +18,7 @@ final class WishCalendarView: UIView {
         frame: .zero,
         collectionViewLayout: UICollectionViewFlowLayout()
     )
+    let addEventButton: UIBarButtonItem = UIBarButtonItem()
     
     // MARK: - Lifecycle
     override init(frame: CGRect) {
@@ -40,6 +41,19 @@ final class WishCalendarView: UIView {
         collectionView.dataSource = dataSource
     }
     
+    func configureAddEventButton(in navigationItem: UINavigationItem, _ target: WishCalendarViewController) {
+        addEventButton.image = UIImage(systemName: "plus")
+        addEventButton.style = .plain
+        addEventButton.target = target
+        navigationItem.rightBarButtonItem = addEventButton
+    }
+    
+    func configureBar(in navigationBar: UINavigationBar?) {
+        navigationBar?.isTranslucent = true
+        navigationBar?.setBackgroundImage(UIImage(), for: .default)
+        navigationBar?.shadowImage = UIImage()
+    }
+    
     // MARK: - Private methods
     private func configureUI() {
         configureCollectionView()
@@ -47,12 +61,20 @@ final class WishCalendarView: UIView {
     
     private func configureCollectionView() {
         addSubview(collectionView)
-        collectionView.backgroundColor = .cyan
+        collectionView.backgroundColor = .clear
         collectionView.alwaysBounceVertical = true
         collectionView.showsVerticalScrollIndicator = false
         collectionView.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        collectionView.clipsToBounds = true
         
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.minimumInteritemSpacing = 0
+            layout.minimumLineSpacing = 0
+            
+            layout.invalidateLayout()
+        }
+        
+        collectionView.register(WishEventCell.self, forCellWithReuseIdentifier: WishEventCell.reuseIdentifier)
         
         collectionView.pinHorizontal(to: self)
         collectionView.pinBottom(to: safeAreaLayoutGuide.bottomAnchor)

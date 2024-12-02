@@ -30,9 +30,15 @@ final class WishCalendarViewController: UIViewController {
     private func setView(to otherView: WishCalendarView) {
         self.view = otherView
         
+        // Передаем цвет фона
         if let bgColor = bgColor {
             (self.view as? WishCalendarView)?.configureBackground(with: bgColor)
         }
+        
+        // Настраиваем бар
+        wishCalendarView.configureAddEventButton(in: navigationItem, self)
+        wishCalendarView.configureBar(in: self.navigationController?.navigationBar)
+        wishCalendarView.addEventButton.action = #selector(didAddEventButtonPressed)
     }
 }
 
@@ -48,12 +54,21 @@ extension WishCalendarViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WishEventCell.reuseIdentifier, for: indexPath)
         
-        return cell
+        guard let wishEventCell = cell as? WishEventCell else { return cell }
+        
+        wishEventCell.configure(
+            with: WishEventModel(
+                title: "Test",
+                description: "Test desc",
+                startDate: "Start",
+                endDate: "End"
+            )
+        )
+        
+        return wishEventCell
     }
-    
-    
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -68,5 +83,13 @@ extension WishCalendarViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         print("Cell tapped at index \(indexPath.item)")
+    }
+}
+
+extension WishCalendarViewController {
+    @objc func didAddEventButtonPressed() {
+        let wishStoringViewController: WishStoringViewController = WishStoringViewController()
+        
+        present(wishStoringViewController, animated: true)
     }
 }
