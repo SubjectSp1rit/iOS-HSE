@@ -22,6 +22,8 @@ final class WishCalendarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setView(to: wishCalendarView)
+        
+        wishCalendarView.configureCollectionViewDelegate(self, dataSource: self)
     }
     
     // MARK: - Private Methods
@@ -31,5 +33,40 @@ final class WishCalendarViewController: UIViewController {
         if let bgColor = bgColor {
             (self.view as? WishCalendarView)?.configureBackground(with: bgColor)
         }
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension WishCalendarViewController: UICollectionViewDelegate {
+    
+}
+
+// MARK: - UICollectionViewDataSource
+extension WishCalendarViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        
+        return cell
+    }
+    
+    
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+extension WishCalendarViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        // Adjust cell size as needed
+        return CGSize(width: collectionView.bounds.width - 10, height: 100)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        didSelectItemAt indexPath: IndexPath) {
+        print("Cell tapped at index \(indexPath.item)")
     }
 }
