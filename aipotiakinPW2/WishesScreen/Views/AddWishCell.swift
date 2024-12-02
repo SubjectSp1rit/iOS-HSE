@@ -27,7 +27,7 @@ final class AddWishCell: UITableViewCell, UITextViewDelegate {
         // wishTextView
         static let wishTextViewFontSize: CGFloat = 16
         static let wishTextViewTextColor: UIColor = .black
-        static let wishTextViewBackgroundColor: UIColor = .white
+        static let wishTextViewBackgroundColor: UIColor = .clear
         static let wishTextViewCornerRadius: CGFloat = 8.0
         static let wishTextViewLeadingIndent: CGFloat = 8
         static let wishTextViewTopIndent: CGFloat = 8
@@ -36,14 +36,14 @@ final class AddWishCell: UITableViewCell, UITextViewDelegate {
         // wishAddButton
         static let wishAddButtonTitle: String = "Add wish"
         static let wishAddButtonTitleColor: UIColor = .black
-        static let wishAddButtonBackgroundColor: UIColor = .white
+        static let wishAddButtonBackgroundColor: UIColor = .clear
         static let wishAddButtonCornerRadius: CGFloat = 8.0
         static let wishAddButtonLeadingIndent: CGFloat = 8
         static let wishAddButtonTopIndent: CGFloat = 8
         static let wishAddButtonBottomIndent: CGFloat = 8
         
         // wrap
-        static let wrapColor: UIColor = .white
+        static let wrapColor: UIColor = .white.withAlphaComponent(0.25)
         static let wrapRadius: CGFloat = 16
         static let wrapLeadingIndent: CGFloat = 8
         static let wrapTopIndent: CGFloat = 8

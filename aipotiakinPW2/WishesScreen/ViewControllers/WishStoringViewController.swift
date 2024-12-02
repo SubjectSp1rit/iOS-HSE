@@ -19,30 +19,31 @@ final class WishStoringViewController: UIViewController {
     }
     
     private let wishStoringView = WishStoringView()
-    private let defaults = UserDefaults.standard
     
     // MARK: - Variables
-    private var wishArray: [String] = []
+    private var wishArray: [Wish] = []
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        wishArray = defaults.array(forKey: Constants.wishesKey) as? [String] ?? []
         
+        loadDataFromDefaults()
         setView(to: wishStoringView)
-        
+        wishStoringView.delegate = self
         wishStoringView.configureTableDelegate(self, dataSource: self)
     }
     
     // MARK: - Private Methods
     private func setView(to otherView: WishStoringView) {
-        view.addSubview(otherView)
-        otherView.setWidth(view.frame.width)
-        otherView.setHeight(view.frame.height)
+        self.view = otherView
+    }
+    
+    private func loadDataFromDefaults() {
+        wishArray = UserDefaultsManager.shared.load(forKey: Constants.wishesKey)
     }
     
     private func saveChangesToDefaults() {
-        defaults.set(wishArray, forKey: Constants.wishesKey)
+        UserDefaultsManager.shared.save(wishArray, forKey: Constants.wishesKey)
     }
 }
 
@@ -84,6 +85,12 @@ extension WishStoringViewController: UITableViewDataSource {
             
             wishCell.configure(with: wishArray[indexPath.row])
             
+            // Закругляем края ячейки
+            let numberOfRows = tableView.numberOfRows(inSection: indexPath.section)
+            let isFirst = indexPath.row == 0
+            let isLast = indexPath.row == numberOfRows - 1
+            wishCell.configureCorners(isFirst: isFirst, isLast: isLast)
+            
             return wishCell
         default:
             fatalError("Unkown section")
@@ -100,7 +107,8 @@ extension WishStoringViewController: UITableViewDelegate {
 // MARK: - AddWishCellDelegate
 extension WishStoringViewController: AddWishCellDelegate {
     func didAddWishButtonPressed(with text: String) {
-        wishArray.append(text)
+        let newWish = Wish(title: text)
+        wishArray.append(newWish)
         saveChangesToDefaults()
         wishStoringView.reloadTable()
     }
@@ -116,8 +124,9 @@ extension WishStoringViewController: WrittenWishCellDelegate {
         
         let saveAction = UIAlertAction(title: "Save", style: .default) { [weak self] _ in
             guard let newText = alertController.textFields?.first?.text, !newText.isEmpty else { return }
-            if let index = self?.wishArray.firstIndex(of: text) {
-                self?.wishArray[index] = newText
+            if let index = self?.wishArray.firstIndex(where: { $0.title == text }) {
+                let newWish = Wish(title: newText)
+                self?.wishArray[index] = newWish
                 self?.saveChangesToDefaults()
                 self?.wishStoringView.reloadTable()
             }
@@ -138,7 +147,7 @@ extension WishStoringViewController: WrittenWishCellDelegate {
         
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
             guard let self = self else { return }
-            if let index = wishArray.firstIndex(of: text) {
+            if let index = wishArray.firstIndex(where: { $0.title == text }) {
                 wishArray.remove(at: index)
                 wishStoringView.reloadTable()
                 saveChangesToDefaults()
@@ -151,5 +160,12 @@ extension WishStoringViewController: WrittenWishCellDelegate {
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true, completion: nil)
+    }
+}
+
+// MARK: - WishStoringViewDelegate
+extension WishStoringViewController: WishStoringViewDelegate {
+    func didCloseButtonPressed() {
+        dismiss(animated: true)
     }
 }

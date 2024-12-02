@@ -26,9 +26,7 @@ final class WishMakerViewController: UIViewController {
 //    }
     
     private func setView(to otherView: WishMakerView) {
-        view.addSubview(otherView)
-        otherView.setWidth(view.frame.width)
-        otherView.setHeight(view.frame.height)
+        self.view = otherView
     }
 }
 
@@ -36,8 +34,6 @@ final class WishMakerViewController: UIViewController {
 extension WishMakerViewController: WishMakerViewDelegate {
     func didAddWishButtonPressed() {
         let wishStoringViewController: WishStoringViewController = WishStoringViewController()
-        
-        //wishStoringViewController.modalPresentationStyle = .fullScreen
         
         present(wishStoringViewController, animated: true)
     }

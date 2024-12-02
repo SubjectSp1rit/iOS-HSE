@@ -16,17 +16,18 @@ final class WrittenWishCell: UITableViewCell {
     // MARK: - Constants
     private enum Constants {
         // general to buttons
-        static let buttonBorderWidth: CGFloat = 1.0
-        static let buttonBorderColor: CGColor = UIColor.black.cgColor
-        static let buttonTitleColor: UIColor = .black
-        static let buttonCornerRadius: CGFloat = 8.0
+        static let buttonTopIndent: CGFloat = 5
+        static let buttonBottomIndent: CGFloat = 5
+        static let buttonHeight: CGFloat = 28
+        static let buttonWidth: CGFloat = 28
         
         // view
         static let viewCellBackgroundColor: UIColor = .clear
         
         // wrap
-        static let wrapColor: UIColor = .white
-        static let wrapRadius: CGFloat = 16
+        static let wrapColor: UIColor = .white.withAlphaComponent(0.25)
+        static let wrapMinRadius: CGFloat = 0
+        static let wrapMaxRadius: CGFloat = 16
         static let wrapLeadingIndent: CGFloat = 8
         
         // wishLabel
@@ -34,16 +35,14 @@ final class WrittenWishCell: UITableViewCell {
         static let wishLabelTrailingIndent: CGFloat = 8
         
         // deleteWishButton
-        static let deleteWishButtonTitle: String = "Delete"
-        static let deleteWishButtonBackgroundColor: UIColor = .red
         static let deleteWishButtonTrailingIndent: CGFloat = 8
-        static let deleteWishButtonWidth: CGFloat = 60
+        static let deleteWishButtonImageName: String = "binIcon"
+        static let deleteWishButtonTintColor: UIColor = .systemRed
         
         // editWishButton
-        static let editWishButtonTitle: String = "Edit"
-        static let editWishButtonBackgroundColor: UIColor = .gray
         static let editWishButtonTrailingIndent: CGFloat = 4
-        static let editWishButtonWidth: CGFloat = 40
+        static let editWishButtonImageName: String = "settingsIcon"
+        static let editWishButtonTintColor: UIColor = .darkGray
     }
     
     static let reuseID: String = "WrittenWishCell"
@@ -69,8 +68,22 @@ final class WrittenWishCell: UITableViewCell {
     }
     
     // MARK: - Public methods
-    func configure(with wish: String) {
-        wishLabel.text = wish
+    func configure(with wish: Wish) {
+        wishLabel.text = wish.title
+    }
+    
+    /// Настраиваем закругления краев
+    func configureCorners(isFirst: Bool, isLast: Bool) {
+        wrap.layer.cornerRadius = Constants.wrapMaxRadius
+        if isFirst && isLast {
+            wrap.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner] /// Закругляем все края
+        } else if isFirst {
+            wrap.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] /// Закругляем только верхние края
+        } else if isLast {
+            wrap.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner] /// Закругляем только нижние края
+        } else {
+            wrap.layer.cornerRadius = Constants.wrapMinRadius /// Не закругляем края
+        }
     }
     
     // MARK: - Private methods
@@ -87,7 +100,6 @@ final class WrittenWishCell: UITableViewCell {
         contentView.addSubview(wrap)
         
         wrap.backgroundColor = Constants.wrapColor
-        wrap.layer.cornerRadius = Constants.wrapRadius
         wrap.pinCenterX(to: contentView.centerXAnchor)
         wrap.pinCenterY(to: contentView.centerYAnchor)
         wrap.pinLeft(to: contentView.leadingAnchor, Constants.wrapLeadingIndent)
@@ -98,29 +110,27 @@ final class WrittenWishCell: UITableViewCell {
         // deleteWishButton
         wrap.addSubview(deleteWishButton)
         
-        deleteWishButton.layer.borderWidth = Constants.buttonBorderWidth
-        deleteWishButton.layer.borderColor = Constants.buttonBorderColor
-        deleteWishButton.layer.cornerRadius = Constants.buttonCornerRadius
-        deleteWishButton.setTitleColor(Constants.buttonTitleColor, for: .normal)
-        deleteWishButton.setTitle(Constants.deleteWishButtonTitle, for: .normal)
-        deleteWishButton.backgroundColor = Constants.deleteWishButtonBackgroundColor
+        deleteWishButton.setImage(UIImage(named: Constants.deleteWishButtonImageName), for: .normal)
+        deleteWishButton.tintColor = Constants.deleteWishButtonTintColor
         deleteWishButton.pinRight(to: wrap.trailingAnchor, Constants.deleteWishButtonTrailingIndent)
-        deleteWishButton.setWidth(Constants.deleteWishButtonWidth)
         deleteWishButton.pinCenterY(to: wrap.centerYAnchor)
+        deleteWishButton.pinTop(to: wrap.topAnchor, Constants.buttonTopIndent)
+        deleteWishButton.pinBottom(to: wrap.bottomAnchor, Constants.buttonBottomIndent)
+        deleteWishButton.setHeight(Constants.buttonHeight)
+        deleteWishButton.setWidth(Constants.buttonWidth)
         deleteWishButton.addTarget(self, action: #selector(deleteWishButtonPressed), for: .touchUpInside)
         
         // editWishButton
         wrap.addSubview(editWishButton)
         
-        editWishButton.layer.borderWidth = Constants.buttonBorderWidth
-        editWishButton.layer.borderColor = Constants.buttonBorderColor
-        editWishButton.layer.cornerRadius = Constants.buttonCornerRadius
-        editWishButton.setTitleColor(Constants.buttonTitleColor, for: .normal)
-        editWishButton.setTitle(Constants.editWishButtonTitle, for: .normal)
-        editWishButton.backgroundColor = Constants.editWishButtonBackgroundColor
+        editWishButton.setImage(UIImage(named: Constants.editWishButtonImageName), for: .normal)
+        editWishButton.tintColor = Constants.editWishButtonTintColor
         editWishButton.pinRight(to: deleteWishButton.leadingAnchor, Constants.editWishButtonTrailingIndent)
-        editWishButton.setWidth(Constants.editWishButtonWidth)
         editWishButton.pinCenterY(to: wrap.centerYAnchor)
+        editWishButton.pinTop(to: wrap.topAnchor, Constants.buttonTopIndent)
+        editWishButton.pinBottom(to: wrap.bottomAnchor, Constants.buttonBottomIndent)
+        editWishButton.setHeight(Constants.buttonHeight)
+        editWishButton.setWidth(Constants.buttonWidth)
         editWishButton.addTarget(self, action: #selector(editWishButtonPressed), for: .touchUpInside)
     }
     

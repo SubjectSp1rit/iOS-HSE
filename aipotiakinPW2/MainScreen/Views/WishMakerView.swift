@@ -31,7 +31,7 @@ final class WishMakerView: UIView {
         static let buttonBorderWidth: CGFloat = 1.0
         static let buttonBorderColor: CGColor = UIColor.black.cgColor
         static let buttonCornerRadius: CGFloat = 15
-        static let buttonBackgroundColor: UIColor = .white
+        static let buttonBackgroundColor: UIColor = .clear
         static let buttonTitleColor: UIColor = .black
         
         static let buttonTouchedDownAlpha: CGFloat = 0.6
@@ -40,7 +40,7 @@ final class WishMakerView: UIView {
         // general to stacks
         static let stackCornerRadius: CGFloat = 20
         static let stackSpacing: CGFloat = 10
-        static let stackBackgroundColor: UIColor = .white
+        static let stackBackgroundColor: UIColor = .clear
         
         // titleLabel
         static let titleText: String = "WishMaker"
@@ -60,6 +60,7 @@ final class WishMakerView: UIView {
         static let descriptionNumberOfLines: Int = 10
         
         // slider
+        static let sliderBackgroundColor: UIColor = .clear
         static let sliderMin: Double = 0.0
         static let sliderMax: Double = 1.0
         static let red: String = "Red"
@@ -71,6 +72,7 @@ final class WishMakerView: UIView {
         static let slidersStackAxis: NSLayoutConstraint.Axis = .vertical
         static let slidersStackBottomIndent: CGFloat = 10
         static let slidersStackLeadingIndent: CGFloat = 20
+        static let slidersStackBackgroundColor: UIColor = .clear
         
         // hexLabel
         static let hexLabelText: String = "#FFFFFF"
@@ -263,7 +265,6 @@ final class WishMakerView: UIView {
     
     private func configureUI() {
         backgroundColor = .white
-        
         configureAddWishButton()
         configureTitle()
         configureSliders()
@@ -345,12 +346,14 @@ final class WishMakerView: UIView {
         
         slidersStack.axis = Constants.slidersStackAxis
         slidersStack.layer.cornerRadius = Constants.stackCornerRadius
+        slidersStack.backgroundColor = Constants.slidersStackBackgroundColor
         slidersStack.clipsToBounds = true
         slidersStack.layer.borderColor = Constants.buttonBorderColor
         slidersStack.layer.borderWidth = Constants.buttonBorderWidth
         
         for slider in [sliderRed, sliderGreen, sliderBlue] {
             slidersStack.addArrangedSubview(slider)
+            slider.backgroundColor = Constants.sliderBackgroundColor
             slider.slider.value = Float(Constants.sliderMax)
         }
         
