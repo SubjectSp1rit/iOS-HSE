@@ -32,4 +32,11 @@ extension WishMakerViewController: WishMakerViewDelegate {
         
         present(wishStoringViewController, animated: true)
     }
+    
+    func didScheduleWishButtonPressed() {
+        let vc = WishCalendarViewController()
+        vc.modalPresentationStyle = .overCurrentContext // Позволяет сделать фон прозрачным
+        vc.bgColor = wishMakerView.currentBackgroundColor
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }

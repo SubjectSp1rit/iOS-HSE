@@ -11,6 +11,7 @@ import UIKit
 // Протокол делегата для передачи событий
 protocol WishMakerViewDelegate: AnyObject {
     func didAddWishButtonPressed()
+    func didScheduleWishButtonPressed()
 }
 
 final class WishMakerView: UIView {
@@ -144,6 +145,9 @@ final class WishMakerView: UIView {
     
     // MARK: - Variables
     private var scheduleWishButtonConstraint: NSLayoutConstraint!
+    var currentBackgroundColor: UIColor {
+        getCurrentBackgroundColor()
+    }
     weak var delegate: WishMakerViewDelegate?
     
     // MARK: - UI Components
@@ -309,7 +313,7 @@ final class WishMakerView: UIView {
         scheduleWishButton.layer.cornerRadius = Constants.buttonCornerRadius
         scheduleWishButton.layer.borderWidth = Constants.buttonBorderWidth
         scheduleWishButton.layer.borderColor = Constants.buttonBorderColor
-        //addWishButton.addTarget(self, action: #selector(addWishButtonPressed), for: .touchUpInside)
+        scheduleWishButton.addTarget(self, action: #selector(scheduleWishButtonPressed), for: .touchUpInside)
     }
     
     private func configureTitle() {
@@ -551,6 +555,11 @@ final class WishMakerView: UIView {
     @objc
     private func addWishButtonPressed() {
         delegate?.didAddWishButtonPressed()
+    }
+    
+    @objc
+    private func scheduleWishButtonPressed() {
+        delegate?.didScheduleWishButtonPressed()
     }
     
     @objc
