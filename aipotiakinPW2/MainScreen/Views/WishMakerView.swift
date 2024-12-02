@@ -80,7 +80,6 @@ final class WishMakerView: UIView {
         static let hexLabelTextFontSize: CGFloat = 20
         static let hexLabelTextAlignment: NSTextAlignment = .center
         static let hexLabelLeadingIndent: CGFloat = 20
-        static let hexLabelBottomIndent: CGFloat = 10
         
         // hexDescriptionLabel
         static let hexDescriptionLabelText: String = "Current HEX-code is"
@@ -235,7 +234,7 @@ final class WishMakerView: UIView {
         updateHexLabelCode()
     }
     
-    func getCurrentBackgroundColor() -> UIColor {
+    private func getCurrentBackgroundColor() -> UIColor {
         return UIColor(
             red: CGFloat(self.sliderRed.slider.value),
             green: CGFloat(self.sliderGreen.slider.value),
@@ -245,7 +244,7 @@ final class WishMakerView: UIView {
     }
     
     // Updates hexLabel hex-code value to actual
-    func updateHexLabelCode() {
+    private func updateHexLabelCode() {
         let red = CGFloat(self.sliderRed.slider.value)
         let green = CGFloat(self.sliderGreen.slider.value)
         let blue = CGFloat(self.sliderBlue.slider.value)
@@ -324,9 +323,9 @@ final class WishMakerView: UIView {
         hexLabel.font = UIFont.systemFont(ofSize: Constants.hexLabelTextFontSize)
         hexLabel.textAlignment = Constants.hexLabelTextAlignment
         
-        hexLabel.pinCenterX(to: centerXAnchor)
         hexLabel.pinLeft(to: leadingAnchor, Constants.hexLabelLeadingIndent)
-        hexLabel.pinBottom(to: showButton.topAnchor, Constants.hexLabelBottomIndent)
+        hexLabel.pinCenterX(to: centerXAnchor)
+        hexLabel.pinCenterY(to: centerYAnchor)
         
         // currentHexColorLabel
         addSubview(hexDescriptionLabel)
@@ -459,8 +458,8 @@ final class WishMakerView: UIView {
         showButton.backgroundColor = Constants.buttonBackgroundColor
         showButton.setTitleColor(Constants.buttonTitleColor, for: .normal)
         showButton.pinCenterX(to: centerXAnchor)
-        showButton.pinCenterY(to: centerYAnchor)
         showButton.pinLeft(to: leadingAnchor, Constants.showButtonLeadingIndent)
+        showButton.pinBottom(to: safeAreaLayoutGuide.bottomAnchor, 40)
         showButton.layer.cornerRadius = Constants.buttonCornerRadius
         showButton.layer.borderColor = Constants.buttonBorderColor
         showButton.layer.borderWidth = Constants.buttonBorderWidth

@@ -31,6 +31,7 @@ final class WrittenWishCell: UITableViewCell {
         static let wrapLeadingIndent: CGFloat = 8
         
         // wishLabel
+        static let wishLabelTextColor: UIColor = .black
         static let wishLabelLeadingIndent: CGFloat = 8
         static let wishLabelTrailingIndent: CGFloat = 8
         
@@ -137,6 +138,7 @@ final class WrittenWishCell: UITableViewCell {
     private func configureWishLabel() {
         wrap.addSubview(wishLabel)
         
+        wishLabel.textColor = Constants.wishLabelTextColor
         wishLabel.pinCenterY(to: wrap.centerYAnchor)
         wishLabel.pinLeft(to: wrap.leadingAnchor, Constants.wishLabelLeadingIndent)
         wishLabel.pinRight(to: editWishButton.leadingAnchor, Constants.wishLabelTrailingIndent)
