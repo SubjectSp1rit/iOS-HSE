@@ -17,7 +17,7 @@ final class UserDefaultsManager {
         self.defaults = defaults
     }
     
-    func save(_ wishes: [Wish], forKey key: String) {
+    func save<T: Codable>(_ wishes: [T], forKey key: String) {
         do {
             let data = try JSONEncoder().encode(wishes)
             defaults.set(data, forKey: key)
@@ -26,10 +26,10 @@ final class UserDefaultsManager {
         }
     }
     
-    func load(forKey key: String) -> [Wish] {
+    func load<T: Codable>(forKey key: String) -> [T] {
         guard let data = defaults.data(forKey: key) else { return [] }
         do {
-            return try JSONDecoder().decode([Wish].self, from: data)
+            return try JSONDecoder().decode([T].self, from: data)
         } catch {
             fatalError("Ошибка при загрузке данных из UserDefaults")
         }

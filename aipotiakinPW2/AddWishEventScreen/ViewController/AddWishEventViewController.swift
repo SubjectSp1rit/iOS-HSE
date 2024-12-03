@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+protocol AddElementDelegate: AnyObject {
+    func didAddElement(_ element: WishEventModel)
+}
+
 final class AddWishEventViewController: UIViewController {
     // MARK: - Constants
     private enum Constants {
@@ -17,6 +21,7 @@ final class AddWishEventViewController: UIViewController {
 
     
     // MARK: - Variables
+    weak var delegate: AddElementDelegate?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -45,6 +50,29 @@ final class AddWishEventViewController: UIViewController {
     private func setView(to otherView: UIView) {
         self.view = otherView
     }
+    
+    // Показ ошибки в виде поп-апа
+    private func showErrorPopup(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .default)
+        alert.addAction(action)
+        present(alert, animated: true)
+    }
+    
+    private func createDateFromPickerView(_ pickerView: UIPickerView) -> Date {
+        // Получаем выбранные значения
+        let selectedDay = pickerView.selectedRow(inComponent: 0) + 1
+        let selectedMonth = pickerView.selectedRow(inComponent: 1) + 1
+        let selectedHour = pickerView.selectedRow(inComponent: 2)
+        let selectedMinute = pickerView.selectedRow(inComponent: 3)
+
+        // Преобразуем в объект Date
+        if let date = createDate(day: selectedDay, month: selectedMonth, year: getCurrentYear(), hour: selectedHour, minute: selectedMinute) {
+            return date
+        } else {
+            fatalError("Ошибка при формировании даты")
+        }
+    }
 }
 
 extension AddWishEventViewController: AddWishEventViewDelegate {
@@ -52,8 +80,28 @@ extension AddWishEventViewController: AddWishEventViewDelegate {
         dismiss(animated: true)
     }
     
-    func didSaveButtonPressed() {
-        print("wow!")
+    func didSaveButtonPressed(title: String, description: String, startDatePickerView: UIPickerView, endDatePickerView: UIPickerView) {
+        let startDate: Date = createDateFromPickerView(startDatePickerView)
+        let endDate: Date = createDateFromPickerView(endDatePickerView)
+        
+        if (startDate >= endDate) {
+            showErrorPopup(message: "End date must be greater than start date")
+            return
+        }
+        
+        let newWishEvent = WishEventModel(
+            title: title,
+            description: description,
+            startDate: startDate,
+            endDate: endDate
+        )
+        // Если все ок, отправляем желание в таблицу
+        delegate?.didAddElement(newWishEvent)
+        dismiss(animated: true)
+    }
+    
+    func showError(message: String) {
+        showErrorPopup(message: message)
     }
 }
 

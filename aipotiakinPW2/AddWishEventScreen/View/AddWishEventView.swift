@@ -10,7 +10,8 @@ import UIKit
 
 protocol AddWishEventViewDelegate: AnyObject {
     func didCloseButtonPressed()
-    func didSaveButtonPressed()
+    func didSaveButtonPressed(title: String, description: String, startDatePickerView: UIPickerView, endDatePickerView: UIPickerView)
+    func showError(message: String)
 }
 
 final class AddWishEventView: UIView {
@@ -67,6 +68,9 @@ final class AddWishEventView: UIView {
         static let endDateLabelTextAlignment: NSTextAlignment = .center
         static let endDateLabelLeadingIndent: CGFloat = 20
         static let endDateLabelTopIndent: CGFloat = 30
+        
+        // error
+        static let errorTitle: String = "Title field can't be empty"
     }
     
     // MARK: - Variables
@@ -262,7 +266,17 @@ final class AddWishEventView: UIView {
     
     @objc
     private func saveButtonPressed() {
-        delegate?.didSaveButtonPressed()
+        if titleTextView.text == Constants.titleTextViewPlaceholderText || titleTextView.text.isEmpty {
+            titleTextView.layer.borderColor = UIColor.systemRed.cgColor
+            delegate?.showError(message: Constants.errorTitle)
+            return
+        }
+        
+        // Формируем данные, которые возвращаем
+        let returnText = titleTextView.text
+        let returnDescription = descriptionTextView.text == Constants.descriptionTextViewPlaceholderText ? "" : descriptionTextView.text
+        delegate?.didSaveButtonPressed(title: returnText!, description: returnDescription!, startDatePickerView: startDatePickerView, endDatePickerView: endDatePickerView)
+        
     }
 }
 
@@ -270,6 +284,7 @@ final class AddWishEventView: UIView {
 extension AddWishEventView: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         // Убираем плейсхолдер, если пользователь начинает вводить текст
+        textView.layer.borderColor = Constants.borderColor
         switch textView.tag {
         case 1:
             if textView.text == Constants.titleTextViewPlaceholderText {

@@ -66,7 +66,11 @@ final class WishCalendarView: UIView {
         navigationBar?.shadowImage = UIImage()
     }
     
-    func configureNoWishesImage() {
+    func configureNoWishesImage(mode: String) {
+        if mode == "delete" {
+            noWishesImage.removeFromSuperview()
+            return
+        }
         addSubview(noWishesImage)
         
         noWishesImage.contentMode = .scaleAspectFit
@@ -74,6 +78,10 @@ final class WishCalendarView: UIView {
         noWishesImage.pinCenterX(to: centerXAnchor)
         noWishesImage.pinCenterY(to: centerYAnchor)
         noWishesImage.pinLeft(to: leadingAnchor, Constants.noWishesImageLeadingIndent, .grOE) // Гарантируем что отступ от левого края >= indent
+    }
+    
+    func reloadTable() {
+        collectionView.reloadData()
     }
     
     // MARK: - Private methods

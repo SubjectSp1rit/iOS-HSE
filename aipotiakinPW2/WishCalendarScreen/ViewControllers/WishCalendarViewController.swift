@@ -11,7 +11,8 @@ import UIKit
 final class WishCalendarViewController: UIViewController {
     // MARK: - Constants
     private enum Constants {
-
+        // wishEventArray
+        static let wishesKey: String = "wishEventArray"
     }
     
     // MARK: - UI Components
@@ -19,13 +20,14 @@ final class WishCalendarViewController: UIViewController {
     
     // MARK: - Variables
     var bgColor: UIColor?
-    private let wishEventArray: [WishEventModel] = []
+    private var wishEventArray: [WishEventModel] = []
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setView(to: wishCalendarView)
         
+        loadDataFromDefaults()
+        setView(to: wishCalendarView)
         wishCalendarView.configureCollectionViewDelegate(self, dataSource: self)
     }
     
@@ -45,8 +47,16 @@ final class WishCalendarViewController: UIViewController {
         
         // Ставим картинку, если желаний нет
         if (wishEventArray.isEmpty) {
-            wishCalendarView.configureNoWishesImage()
+            wishCalendarView.configureNoWishesImage(mode: "add")
         }
+    }
+    
+    private func loadDataFromDefaults() {
+        wishEventArray = UserDefaultsManager.shared.load(forKey: Constants.wishesKey)
+    }
+    
+    private func saveChangesToDefaults() {
+        UserDefaultsManager.shared.save(wishEventArray, forKey: Constants.wishesKey)
     }
 }
 
@@ -86,10 +96,17 @@ extension WishCalendarViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension WishCalendarViewController {
+extension WishCalendarViewController: AddElementDelegate {
     @objc func didAddEventButtonPressed() {
         let addWishEventViewController: AddWishEventViewController = AddWishEventViewController()
-        
+        addWishEventViewController.delegate = self
         present(addWishEventViewController, animated: true)
+    }
+    
+    func didAddElement(_ element: WishEventModel) {
+        wishEventArray.append(element)
+        wishCalendarView.reloadTable()
+        saveChangesToDefaults()
+        wishCalendarView.configureNoWishesImage(mode: "delete")
     }
 }
