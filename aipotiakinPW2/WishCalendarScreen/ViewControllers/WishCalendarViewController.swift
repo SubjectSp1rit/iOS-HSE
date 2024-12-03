@@ -15,6 +15,8 @@ final class WishCalendarViewController: UIViewController {
         static let wishesKey: String = "wishEventArray"
     }
     
+    let calendarManager = CalendarEventManager()
+    
     // MARK: - UI Components
     private let wishCalendarView = WishCalendarView()
     
@@ -26,7 +28,7 @@ final class WishCalendarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadDataFromDefaults()
+        //loadDataFromDefaults()
         // Удаляем все старые желания (чей срок прошел)
         deleteOldWishEvents()
         setView(to: wishCalendarView)
@@ -116,5 +118,13 @@ extension WishCalendarViewController: AddElementDelegate {
         wishCalendarView.reloadTable()
         saveChangesToDefaults()
         wishCalendarView.configureNoWishesImage(mode: "delete")
+        
+        let isEventCreated = calendarManager.create(eventModel: element)
+
+        if isEventCreated {
+            print("Событие успешно добавлено в календарь!")
+        } else {
+            print("Не удалось добавить событие в календарь.")
+        }
     }
 }

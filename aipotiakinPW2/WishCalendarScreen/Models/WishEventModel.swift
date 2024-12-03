@@ -5,7 +5,9 @@
 //  Created by Arseniy on 03.12.2024.
 //
 
-
+protocol CalendarManaging {
+    func create(eventModel: WishEventModel) -> Bool
+}
 
 import Foundation
 
