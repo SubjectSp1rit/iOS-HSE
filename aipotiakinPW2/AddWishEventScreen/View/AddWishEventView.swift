@@ -90,6 +90,7 @@ final class AddWishEventView: UIView {
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     let hours = Array(0...23).map { String(format: "%02d", $0) } // Часы от 00 до 23
     let minutes = Array(0...59).map { String(format: "%02d", $0) } // Минуты от 00 до 59
+    var receivedTitle: String?
     
     // MARK: - UI Components
     private let closeButton: UIButton = UIButton(type: .system)
@@ -136,6 +137,11 @@ final class AddWishEventView: UIView {
         
         endDatePickerView.dataSource = datasource
         endDatePickerView.delegate = delegate
+    }
+    
+    func setDefaultTitleView(to title: String) {
+        titleTextView.textColor = Constants.textViewTextColor
+        titleTextView.text = title
     }
     
     // MARK: - Private methods

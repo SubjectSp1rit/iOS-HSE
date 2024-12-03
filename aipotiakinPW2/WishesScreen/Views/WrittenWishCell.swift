@@ -10,6 +10,7 @@ import UIKit
 protocol WrittenWishCellDelegate: AnyObject {
     func didEditWishButtonPressed(with text: String)
     func didDeleteWishButtonPressed(with text: String)
+    func didScheduleWishButtonPressed(with text: String)
 }
 
 final class WrittenWishCell: UITableViewCell {
@@ -44,6 +45,11 @@ final class WrittenWishCell: UITableViewCell {
         static let editWishButtonTrailingIndent: CGFloat = 4
         static let editWishButtonImageName: String = "settingsIcon"
         static let editWishButtonTintColor: UIColor = .darkGray
+        
+        // scheduleWishButton
+        static let scheduleWishButtonTrailingIndent: CGFloat = 4
+        static let scheduleWishButtonImageName: String = "calendarIcon"
+        static let scheduleWishButtonTintColor: UIColor = .systemBlue
     }
     
     static let reuseID: String = "WrittenWishCell"
@@ -51,6 +57,7 @@ final class WrittenWishCell: UITableViewCell {
     private let wishLabel: UILabel = UILabel()
     private let editWishButton: UIButton = UIButton(type: .system)
     private let deleteWishButton: UIButton = UIButton(type: .system)
+    private let scheduleWishButton: UIButton = UIButton(type: .system)
     private let wrap: UIView = UIView()
     
     // MARK: - Variables
@@ -94,6 +101,7 @@ final class WrittenWishCell: UITableViewCell {
         
         configureWrap()
         configureButtons()
+        configureScheduleWishButton()
         configureWishLabel()
     }
     
@@ -105,6 +113,20 @@ final class WrittenWishCell: UITableViewCell {
         wrap.pinCenterY(to: contentView.centerYAnchor)
         wrap.pinLeft(to: contentView.leadingAnchor, Constants.wrapLeadingIndent)
         wrap.pinTop(to: contentView.topAnchor)
+    }
+    
+    private func configureScheduleWishButton() {
+        wrap.addSubview(scheduleWishButton)
+        
+        scheduleWishButton.setImage(UIImage(named: Constants.scheduleWishButtonImageName), for: .normal)
+        scheduleWishButton.tintColor = Constants.scheduleWishButtonTintColor
+        scheduleWishButton.pinRight(to: editWishButton.leadingAnchor, Constants.scheduleWishButtonTrailingIndent)
+        scheduleWishButton.pinCenterY(to: wrap.centerYAnchor)
+        scheduleWishButton.pinTop(to: wrap.topAnchor, Constants.buttonTopIndent)
+        scheduleWishButton.pinBottom(to: wrap.bottomAnchor, Constants.buttonBottomIndent)
+        scheduleWishButton.setHeight(Constants.buttonHeight)
+        scheduleWishButton.setWidth(Constants.buttonWidth)
+        scheduleWishButton.addTarget(self, action: #selector(scheduleWishButtonPressed), for: .touchUpInside)
     }
     
     private func configureButtons() {
@@ -141,7 +163,7 @@ final class WrittenWishCell: UITableViewCell {
         wishLabel.textColor = Constants.wishLabelTextColor
         wishLabel.pinCenterY(to: wrap.centerYAnchor)
         wishLabel.pinLeft(to: wrap.leadingAnchor, Constants.wishLabelLeadingIndent)
-        wishLabel.pinRight(to: editWishButton.leadingAnchor, Constants.wishLabelTrailingIndent)
+        wishLabel.pinRight(to: scheduleWishButton.leadingAnchor, Constants.wishLabelTrailingIndent)
     }
     
     @objc private func editWishButtonPressed() {
@@ -152,5 +174,10 @@ final class WrittenWishCell: UITableViewCell {
     @objc private func deleteWishButtonPressed() {
         guard let text = wishLabel.text else { return }
         delegate?.didDeleteWishButtonPressed(with: text)
+    }
+    
+    @objc private func scheduleWishButtonPressed() {
+        guard let text = wishLabel.text else { return }
+        delegate?.didScheduleWishButtonPressed(with: text)
     }
 }

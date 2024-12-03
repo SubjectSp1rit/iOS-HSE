@@ -22,6 +22,7 @@ final class AddWishEventViewController: UIViewController {
     
     // MARK: - Variables
     weak var delegate: AddElementDelegate?
+    var receivedTitle: String?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -30,6 +31,10 @@ final class AddWishEventViewController: UIViewController {
         setView(to: addWishEventView)
         addWishEventView.delegate = self
         addWishEventView.configurePickerViewDelegate(self, datasource: self)
+        
+        if let title = receivedTitle {
+            addWishEventView.setDefaultTitleView(to: title)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {

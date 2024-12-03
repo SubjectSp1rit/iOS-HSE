@@ -155,7 +155,5 @@ extension WishCalendarViewController: WishEventCellDelegate {
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true, completion: nil)
-    }
-    
-    
+    }   
 }

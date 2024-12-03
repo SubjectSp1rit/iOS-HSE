@@ -22,6 +22,7 @@ final class WishStoringViewController: UIViewController {
     
     // MARK: - Variables
     private var wishArray: [Wish] = []
+    weak var calendarDelegate: AddElementDelegate?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -160,6 +161,14 @@ extension WishStoringViewController: WrittenWishCellDelegate {
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true, completion: nil)
+    }
+    
+    func didScheduleWishButtonPressed(with text: String) {
+        let addWishEventViewController: AddWishEventViewController = AddWishEventViewController()
+        addWishEventViewController.receivedTitle = text
+        addWishEventViewController.delegate = calendarDelegate
+        
+        present(addWishEventViewController, animated: true)
     }
 }
 
