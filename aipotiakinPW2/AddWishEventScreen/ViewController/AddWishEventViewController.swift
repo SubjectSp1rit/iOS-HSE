@@ -18,11 +18,12 @@ final class AddWishEventViewController: UIViewController {
     }
     
     private let addWishEventView = AddWishEventView()
-
+    let calendarManager = CalendarEventManager()
     
     // MARK: - Variables
     weak var delegate: AddElementDelegate?
     var receivedTitle: String?
+    var isFromWishStoringViewController: Bool = false
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -101,7 +102,17 @@ extension AddWishEventViewController: AddWishEventViewDelegate {
             endDate: endDate
         )
         // Если все ок, отправляем желание в таблицу
-        delegate?.didAddElement(newWishEvent, isSwitchPressed)
+        if (isFromWishStoringViewController) {
+            var wishEventArray: [WishEventModel] = UserDefaultsManager.shared.load(forKey: "wishEventArray")
+            wishEventArray.append(newWishEvent)
+            UserDefaultsManager.shared.save(wishEventArray, forKey: "wishEventArray")
+            
+            if isSwitchPressed {
+                calendarManager.create(eventModel: newWishEvent)
+            }
+        } else {
+            delegate?.didAddElement(newWishEvent, isSwitchPressed)
+        }
         
         if isSwitchPressed {
             let alert = UIAlertController(title: "Success", message: "The event has been successfully added to the calendar!", preferredStyle: .alert)

@@ -35,6 +35,11 @@ final class WishCalendarViewController: UIViewController {
         wishCalendarView.configureCollectionViewDelegate(self, dataSource: self)
     }
     
+    // Unsubscribe to avoid memory leak
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     // MARK: - Private Methods
     private func setView(to otherView: WishCalendarView) {
         self.view = otherView
