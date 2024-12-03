@@ -14,17 +14,24 @@ protocol AddElementDelegate: AnyObject {
 
 final class AddWishEventViewController: UIViewController {
     // MARK: - Constants
+    let calendarManager = CalendarEventManager()
     private enum Constants {
+        // keys for UserDefaults
+        static let wishesKey: String = "wishArray"
+        static let wishEventKey: String = "wishEventArray"
+        
+        // message
+        static let endDateGreaterThanStartDateErrorMsg: String = "End date must be greater than start date"
     }
     
+    // MARK: - UI Components
     private let addWishEventView = AddWishEventView()
-    let calendarManager = CalendarEventManager()
     
     // MARK: - Variables
     weak var delegate: AddElementDelegate?
     var receivedTitle: String?
     var isFromWishStoringViewController: Bool = false
-    var onDismiss: (() -> Void)? // Замыкание для WishStoringViewController
+    var onDismiss: (() -> Void)? // Closure for WishStoringViewController
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -50,12 +57,12 @@ final class AddWishEventViewController: UIViewController {
     
     // MARK: - Private Methods
     private func configurePickerView() {
-        // Инициализируем дни по умолчанию (на основе текущего месяца)
+        // Initialize default days (based on the current month)
         let currentDate = Date()
         let calendar = Calendar.current
         let currentMonth = calendar.component(.month, from: currentDate)
         
-        updateDays(forMonthIndex: currentMonth - 1) // Устанавливаем дни для текущего месяца
+        updateDays(forMonthIndex: currentMonth - 1) // Set days for current month
         addWishEventView.configurePickerView(to: currentDate)
     }
     
@@ -63,7 +70,7 @@ final class AddWishEventViewController: UIViewController {
         self.view = otherView
     }
     
-    // Показ ошибки в виде поп-апа
+    /// Shows error as pop-up
     private func showErrorPopup(message: String) {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
         let action = UIAlertAction(title: "OK", style: .default)
@@ -72,17 +79,17 @@ final class AddWishEventViewController: UIViewController {
     }
     
     private func createDateFromPickerView(_ pickerView: UIPickerView) -> Date {
-        // Получаем выбранные значения
+        // get selected values from pickerViews
         let selectedDay = pickerView.selectedRow(inComponent: 0) + 1
         let selectedMonth = pickerView.selectedRow(inComponent: 1) + 1
         let selectedHour = pickerView.selectedRow(inComponent: 2)
         let selectedMinute = pickerView.selectedRow(inComponent: 3)
 
-        // Преобразуем в объект Date
+        // convert object to Date type
         if let date = createDate(day: selectedDay, month: selectedMonth, year: getCurrentYear(), hour: selectedHour, minute: selectedMinute) {
             return date
         } else {
-            fatalError("Ошибка при формировании даты")
+            fatalError("Error while generating date")
         }
     }
 }
@@ -97,7 +104,7 @@ extension AddWishEventViewController: AddWishEventViewDelegate {
         let endDate: Date = createDateFromPickerView(endDatePickerView)
         
         if (startDate >= endDate) {
-            showErrorPopup(message: "End date must be greater than start date")
+            showErrorPopup(message: Constants.endDateGreaterThanStartDateErrorMsg)
             return
         }
         
@@ -107,17 +114,23 @@ extension AddWishEventViewController: AddWishEventViewDelegate {
             startDate: startDate,
             endDate: endDate
         )
-        // Если все ок, отправляем желание в таблицу
+        
+        // if previous screen if WishStoringViewController - another behaviour
         if (isFromWishStoringViewController) {
-            var wishEventArray: [WishEventModel] = UserDefaultsManager.shared.load(forKey: "wishEventArray")
+            // load arrays to local memory
+            var wishEventArray: [WishEventModel] = UserDefaultsManager.shared.load(forKey: Constants.wishEventKey)
+            var wishArray: [Wish] = UserDefaultsManager.shared.load(forKey: Constants.wishesKey)
             
-            var wishArray: [Wish] = UserDefaultsManager.shared.load(forKey: "wishArray")
+            // delete chosen saved wish
             if let index = wishArray.firstIndex(where: { $0.title == title }) {
                 wishArray.remove(at: index) }
-                
+            
+            // add new scheduled wish event
             wishEventArray.append(newWishEvent)
-            UserDefaultsManager.shared.save(wishEventArray, forKey: "wishEventArray")
-            UserDefaultsManager.shared.save(wishArray, forKey: "wishArray")
+            
+            // save all changes to Defaults
+            UserDefaultsManager.shared.save(wishEventArray, forKey: Constants.wishEventKey)
+            UserDefaultsManager.shared.save(wishArray, forKey: Constants.wishesKey)
             
             if isSwitchPressed {
                 calendarManager.create(eventModel: newWishEvent)
@@ -152,13 +165,13 @@ extension AddWishEventViewController: UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch component {
         case 0:
-            return addWishEventView.days.count // Дни
+            return addWishEventView.days.count // Days
         case 1:
-            return addWishEventView.months.count // Месяцы
+            return addWishEventView.months.count // Months
         case 2:
-            return addWishEventView.hours.count // Часы
+            return addWishEventView.hours.count // Hours
         case 3:
-            return addWishEventView.minutes.count // Минуты
+            return addWishEventView.minutes.count // Minutes
         default:
             return 0
         }
@@ -170,13 +183,13 @@ extension AddWishEventViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch component {
         case 0:
-            return safeIndex(addWishEventView.days, row) // Дни
+            return safeIndex(addWishEventView.days, row) // Days
         case 1:
-            return safeIndex(addWishEventView.months, row) // Месяцы
+            return safeIndex(addWishEventView.months, row) // Months
         case 2:
-            return safeIndex(addWishEventView.hours, row) // Часы
+            return safeIndex(addWishEventView.hours, row) // Hours
         case 3:
-            return safeIndex(addWishEventView.minutes, row) // Минуты
+            return safeIndex(addWishEventView.minutes, row) // Minutes
         default:
             return nil
         }
@@ -185,9 +198,9 @@ extension AddWishEventViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
             switch component {
             case 0, 2, 3:
-                return 50 // Ширина колонок для часов и минут
+                return 50 // Width for days, hours, minutes
             default:
-                return 130 // Ширина для остальных колонок
+                return 130 // Width for months
             }
     }
     
@@ -201,9 +214,8 @@ extension AddWishEventViewController: UIPickerViewDelegate {
         dateComponents.hour = hour
         dateComponents.minute = minute
 
-        // Устанавливаем временную зону на текущую
         var calendar = Calendar.current
-        calendar.timeZone = TimeZone.autoupdatingCurrent // Используем текущую временную зону
+        calendar.timeZone = TimeZone.autoupdatingCurrent
 
         return calendar.date(from: dateComponents)
     }

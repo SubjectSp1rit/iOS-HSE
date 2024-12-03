@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 
-// Протокол делегата для передачи событий
 protocol WishMakerViewDelegate: AnyObject {
     func didAddWishButtonPressed()
     func didScheduleWishButtonPressed()
@@ -194,14 +193,8 @@ final class WishMakerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Methods
-// This method violates YAGNI, but it's necessary for working with the model in the future according to MVC architecture
-//    func configure(with data: MODELNAME) {
-//        // Here we change view data to new data from the model
-//    }
-    
     // MARK: - Private methods
-    // Disables all buttons from the list
+    /// Disables all buttons from the list
     private func disableButtons(_ buttons: [UIButton]) {
         for button in buttons {
             button.isEnabled = false
@@ -248,9 +241,9 @@ final class WishMakerView: UIView {
         updateButtonsBackgroundColor(to: newBackgroundColor)
     }
     
-    /// Обновляет цвет фона кнопок на цвет фона приложения
+    /// Updates button background color to view background color
     private func updateButtonsBackgroundColor(to color: UIColor) {
-        // Если цвет белый - делаем текст кнопок черным, иначе цвет фона
+        // if color is white - make button text black, otherwise background color
         if checkIfColorIsWhite(color) {
             addWishButton.setTitleColor(Constants.addWishButtonTitleColor, for: .normal)
             scheduleWishButton.setTitleColor(Constants.scheduleWishButtonTitleColor, for: .normal)
@@ -260,22 +253,21 @@ final class WishMakerView: UIView {
         }
     }
     
-    /// Проверяет является ли переданный цвет белым
+    /// Check if the given color is white
     private func checkIfColorIsWhite(_ color: UIColor) -> Bool {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
+        var red: CGFloat = Constants.sliderMin
+        var green: CGFloat = Constants.sliderMin
+        var blue: CGFloat = Constants.sliderMin
+        var alpha: CGFloat = Constants.sliderMin
         
         if color.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
-            // Проверяем, что значения равны 1.0 (белый цвет) и альфа равна 1.0
-            return red == 1.0 && green == 1.0 && blue == 1.0 && alpha == 1.0
+            return red == Constants.sliderMax && green == Constants.sliderMax && blue == Constants.sliderMax && alpha == Constants.sliderMax
         }
         
         return false
     }
     
-    /// Возвращает текущий цвет фона
+    /// Returns the current background color
     private func getCurrentBackgroundColor() -> UIColor {
         return UIColor(
             red: CGFloat(self.sliderRed.slider.value),
@@ -285,7 +277,7 @@ final class WishMakerView: UIView {
         )
     }
     
-    // Updates hexLabel hex-code value to actual
+    /// Updates hexLabel hex-code value to actual
     private func updateHexLabelCode() {
         let red = CGFloat(self.sliderRed.slider.value)
         let green = CGFloat(self.sliderGreen.slider.value)
@@ -294,7 +286,7 @@ final class WishMakerView: UIView {
         self.hexLabel.text = rgbToHex(red: red, green: green, blue: blue)
     }
 
-    // Converts RGB values (0.0 to 1.0) to HEX-code (00 - FF)
+    /// Converts RGB values (0.0 to 1.0) to HEX-code (00 - FF)
     private func rgbToHex(red: CGFloat, green: CGFloat, blue: CGFloat) -> String {
         let hexMultiplier: CGFloat = 255
         let r: Int = Int(red * hexMultiplier)
@@ -303,6 +295,7 @@ final class WishMakerView: UIView {
         let hexFormat: String = "#%02X%02X%02X"
         return String(format: hexFormat, r, g, b)
     }
+    
     private func configureUI() {
         backgroundColor = .white
         configureScheduleWishButton()

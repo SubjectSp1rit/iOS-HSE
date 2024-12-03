@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-/// Singleton-класс для управления UserDefaults
+/// Singleton-class fpor managing UserDefaults
 final class UserDefaultsManager {
     static let shared = UserDefaultsManager()
     private let defaults: UserDefaults
@@ -22,7 +22,7 @@ final class UserDefaultsManager {
             let data = try JSONEncoder().encode(wishes)
             defaults.set(data, forKey: key)
         } catch {
-            fatalError("Ошибка при сохранении данных в UserDefaults")
+            fatalError("Error when saving to UserDefaults")
         }
     }
     
@@ -31,7 +31,7 @@ final class UserDefaultsManager {
         do {
             return try JSONDecoder().decode([T].self, from: data)
         } catch {
-            fatalError("Ошибка при загрузке данных из UserDefaults")
+            fatalError("Error when loading from UserDefaults")
         }
     }
 }

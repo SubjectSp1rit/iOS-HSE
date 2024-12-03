@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 
-// Протокол делегата для передачи событий
 protocol WishStoringViewDelegate: AnyObject {
     func didCloseButtonPressed()
 }
@@ -95,7 +94,6 @@ final class WishStoringView: UIView {
         table.separatorStyle = .none
         table.layer.cornerRadius = Constants.tableCornerRadius
         
-        //table.pin(to: self, Constants.tableIndent)
         table.pinTop(to: closeButton.bottomAnchor, Constants.tableTopIndent)
         table.pinBottom(to: safeAreaLayoutGuide.bottomAnchor)
         table.pinLeft(to: safeAreaLayoutGuide.leadingAnchor)

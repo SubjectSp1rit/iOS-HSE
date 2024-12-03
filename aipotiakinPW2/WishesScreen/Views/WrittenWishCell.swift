@@ -80,17 +80,17 @@ final class WrittenWishCell: UITableViewCell {
         wishLabel.text = wish.title
     }
     
-    /// Настраиваем закругления краев
+    /// Configures edge rounding
     func configureCorners(isFirst: Bool, isLast: Bool) {
         wrap.layer.cornerRadius = Constants.wrapMaxRadius
         if isFirst && isLast {
-            wrap.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner] /// Закругляем все края
+            wrap.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner] // round all corners
         } else if isFirst {
-            wrap.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] /// Закругляем только верхние края
+            wrap.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] // round only top corners (for the first elem)
         } else if isLast {
-            wrap.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner] /// Закругляем только нижние края
+            wrap.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner] // round only bottom corners (for the last elem)
         } else {
-            wrap.layer.cornerRadius = Constants.wrapMinRadius /// Не закругляем края
+            wrap.layer.cornerRadius = Constants.wrapMinRadius // do not round corners (middle elements)
         }
     }
     

@@ -8,7 +8,7 @@
 import UIKit
 
 final class WishMakerViewController: UIViewController {
-    // MARK: - Constants
+    // MARK: - UI Components
     private let wishMakerView = WishMakerView()
     
     // MARK: - Lifecycle

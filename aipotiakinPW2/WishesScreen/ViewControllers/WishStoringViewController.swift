@@ -18,6 +18,7 @@ final class WishStoringViewController: UIViewController {
         static let numberOfSections: Int = 2
     }
     
+    // MARK: - UI Components
     private let wishStoringView = WishStoringView()
     
     // MARK: - Variables
@@ -85,7 +86,7 @@ extension WishStoringViewController: UITableViewDataSource {
             
             wishCell.configure(with: wishArray[indexPath.row])
             
-            // Закругляем края ячейки
+            // Round edges
             let numberOfRows = tableView.numberOfRows(inSection: indexPath.section)
             let isFirst = indexPath.row == 0
             let isLast = indexPath.row == numberOfRows - 1
@@ -117,7 +118,10 @@ extension WishStoringViewController: AddWishCellDelegate {
 // MARK: - WrittenWishCellDelegate
 extension WishStoringViewController: WrittenWishCellDelegate {
     func didEditWishButtonPressed(with text: String) {
-        let alertController = UIAlertController(title: "Edit Wish", message: nil, preferredStyle: .alert)
+        let alertController = UIAlertController(
+            title: "Edit Wish",
+            message: nil,
+            preferredStyle: .alert)
         alertController.addTextField { textField in
             textField.text = text
         }
@@ -164,8 +168,8 @@ extension WishStoringViewController: WrittenWishCellDelegate {
     
     func didScheduleWishButtonPressed(with text: String) {
         let addWishEventViewController: AddWishEventViewController = AddWishEventViewController()
-        addWishEventViewController.receivedTitle = text
-        addWishEventViewController.isFromWishStoringViewController = true
+        addWishEventViewController.receivedTitle = text // set title to saved wish title
+        addWishEventViewController.isFromWishStoringViewController = true // flag to change behaviour
         
         present(addWishEventViewController, animated: true)
         

@@ -169,15 +169,15 @@ extension AddWishCell: UITextViewDelegate {
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
-        // Убираем плейсхолдер, если пользователь начинает вводить текст
+        // Remove the placeholder if the user starts typing text
         if textView.text == Constants.wishTextViewPlaceholderText {
             textView.text = ""
-            textView.textColor = Constants.wishTextViewTextColor // Изменяем цвет текста на основной
+            textView.textColor = Constants.wishTextViewTextColor
             }
         }
 
     func textViewDidEndEditing(_ textView: UITextView) {
-        // Возвращаем плейсхолдер, если текстовое поле пустое
+        // return the placeholder if the textView is empty
         if textView.text.isEmpty {
             textView.text = Constants.wishTextViewPlaceholderText
             textView.textColor = Constants.wishTextViewPlaceholderTextColor
