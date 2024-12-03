@@ -51,6 +51,10 @@ extension AddWishEventViewController: AddWishEventViewDelegate {
     func didCloseButtonPressed() {
         dismiss(animated: true)
     }
+    
+    func didSaveButtonPressed() {
+        print("wow!")
+    }
 }
 
 // MARK: - UIPickerViewDataSource

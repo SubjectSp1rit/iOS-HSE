@@ -24,7 +24,7 @@ final class WishStoringView: UIView {
         
         // closeButton
         static let closeButtonBackgroundColor: UIColor = .clear
-        static let closeButtonTitle: String = "Close"
+        static let closeButtonTitle: String = "Cancel"
         static let closeButtonTintColor: UIColor = .systemBlue
         static let closeButtonTopIndent: CGFloat = 10
         static let closeButtonLeadingIndent: CGFloat = 10

@@ -10,6 +10,7 @@ import UIKit
 
 protocol AddWishEventViewDelegate: AnyObject {
     func didCloseButtonPressed()
+    func didSaveButtonPressed()
 }
 
 final class AddWishEventView: UIView {
@@ -37,11 +38,19 @@ final class AddWishEventView: UIView {
         
         // closeButton
         static let closeButtonBackgroundColor: UIColor = .clear
-        static let closeButtonTitle: String = "Close"
+        static let closeButtonTitle: String = "Cancel"
         static let closeButtonTintColor: UIColor = .systemBlue
         static let closeButtonTopIndent: CGFloat = 10
         static let closeButtonLeadingIndent: CGFloat = 10
         static let closeButtonHeight: CGFloat = 20
+        
+        // saveButton
+        static let saveButtonBackgroundColor: UIColor = .clear
+        static let saveButtonTitle: String = "Save"
+        static let saveButtonTintColor: UIColor = .systemBlue
+        static let saveButtonTopIndent: CGFloat = 10
+        static let saveButtonTrailingIndent: CGFloat = 10
+        static let saveButtonHeight: CGFloat = 20
         
         // startDateLabel
         static let startDateLabelText: String = "Select start date"
@@ -69,6 +78,7 @@ final class AddWishEventView: UIView {
     
     // MARK: - UI Components
     private let closeButton: UIButton = UIButton(type: .system)
+    private let saveButton: UIButton = UIButton(type: .system)
     private let titleTextView: UITextView = UITextView()
     private let descriptionTextView: UITextView = UITextView()
     private let startDatePickerView: UIPickerView = UIPickerView()
@@ -115,6 +125,7 @@ final class AddWishEventView: UIView {
     private func configureUI() {
         configureBackground()
         configureCloseButton()
+        configureSaveButton()
         configureTitleTextView()
         configureDescriptionTextView()
         configureStartDateLabel()
@@ -145,6 +156,17 @@ final class AddWishEventView: UIView {
         closeButton.pinLeft(to: safeAreaLayoutGuide.leadingAnchor, Constants.closeButtonLeadingIndent)
         closeButton.setHeight(Constants.closeButtonHeight)
         closeButton.addTarget(self, action: #selector(closeButtonPressed), for: .touchUpInside)
+    }
+    
+    private func configureSaveButton() {
+        addSubview(saveButton)
+        saveButton.backgroundColor = Constants.saveButtonBackgroundColor
+        saveButton.setTitle(Constants.saveButtonTitle, for: .normal)
+        saveButton.tintColor = Constants.saveButtonTintColor
+        saveButton.pinTop(to: safeAreaLayoutGuide.topAnchor, Constants.saveButtonTopIndent)
+        saveButton.pinRight(to: safeAreaLayoutGuide.trailingAnchor, Constants.saveButtonTrailingIndent)
+        saveButton.setHeight(Constants.saveButtonHeight)
+        saveButton.addTarget(self, action: #selector(saveButtonPressed), for: .touchUpInside)
     }
     
     private func configureTitleTextView() {
@@ -236,6 +258,11 @@ final class AddWishEventView: UIView {
     @objc
     private func closeButtonPressed() {
         delegate?.didCloseButtonPressed()
+    }
+    
+    @objc
+    private func saveButtonPressed() {
+        delegate?.didSaveButtonPressed()
     }
 }
 
