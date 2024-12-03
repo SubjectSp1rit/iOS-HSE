@@ -11,7 +11,7 @@ protocol AddWishCellDelegate: AnyObject {
     func didAddWishButtonPressed(with text: String)
 }
 
-final class AddWishCell: UITableViewCell, UITextViewDelegate {
+final class AddWishCell: UITableViewCell {
     // MARK: - Constants
     private enum Constants {
         // animations
@@ -32,6 +32,8 @@ final class AddWishCell: UITableViewCell, UITextViewDelegate {
         static let wishTextViewLeadingIndent: CGFloat = 8
         static let wishTextViewTopIndent: CGFloat = 8
         static let wishTextViewStandardHeight: CGFloat = 36
+        static let wishTextViewPlaceholderText: String = "Введите свое самое сокровенное желание!"
+        static let wishTextViewPlaceholderTextColor: UIColor = .lightGray
         
         // wishAddButton
         static let wishAddButtonTitle: String = "Add wish"
@@ -51,6 +53,7 @@ final class AddWishCell: UITableViewCell, UITextViewDelegate {
     
     static let reuseID: String = "AddWishCell"
     
+    // MARK: - UI Components
     private let wishTextView: UITextView = UITextView()
     private let wishAddButton: UIButton = UIButton(type: .system)
     private let wrap: UIView = UIView()
@@ -69,26 +72,6 @@ final class AddWishCell: UITableViewCell, UITextViewDelegate {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - Public Methods
-    /// Track text editing and update heightConstraint
-    func textViewDidChange(_ textView: UITextView) {
-        // Subtract new text height
-        let sizeThatFits = textView.sizeThatFits(CGSize(width: textView.frame.width, height: CGFloat.greatestFiniteMagnitude))
-        let newHeight = sizeThatFits.height
-        
-        // Update height if height has changed
-        if newHeight != wishTextViewHeightConstraint.constant {
-            wishTextViewHeightConstraint.constant = newHeight
-            if let tableView = self.superview as? UITableView {
-                UIView.animate(withDuration: Constants.wishTextViewTransformationAnimationDuration, animations: {
-                        tableView.beginUpdates()
-                        tableView.endUpdates()
-                        self.layoutIfNeeded()
-                })
-            }
-        }
     }
     
     // MARK: - Private methods
@@ -117,11 +100,12 @@ final class AddWishCell: UITableViewCell, UITextViewDelegate {
     
     private func configureWishTextView() {
         wishTextView.font = UIFont.systemFont(ofSize: Constants.wishTextViewFontSize)
-        wishTextView.textColor = Constants.wishTextViewTextColor
         wishTextView.layer.borderColor = Constants.borderColor
         wishTextView.layer.borderWidth = Constants.borderWidth
         wishTextView.layer.cornerRadius = Constants.wishTextViewCornerRadius
         wishTextView.backgroundColor = Constants.wishTextViewBackgroundColor
+        wishTextView.text = Constants.wishTextViewPlaceholderText
+        wishTextView.textColor = Constants.wishTextViewPlaceholderTextColor
         wishTextView.isSelectable = true
         wishTextView.isEditable = true
         wishTextView.isUserInteractionEnabled = true
@@ -160,5 +144,43 @@ final class AddWishCell: UITableViewCell, UITextViewDelegate {
         })
         
         wishTextView.text = ""
+    }
+}
+
+// MARK: - UITextViewDelegate
+extension AddWishCell: UITextViewDelegate {
+    /// Track text editing and update heightConstraint
+    func textViewDidChange(_ textView: UITextView) {
+        // Subtract new text height
+        let sizeThatFits = textView.sizeThatFits(CGSize(width: textView.frame.width, height: CGFloat.greatestFiniteMagnitude))
+        let newHeight = sizeThatFits.height
+        
+        // Update height if height has changed
+        if newHeight != wishTextViewHeightConstraint.constant {
+            wishTextViewHeightConstraint.constant = newHeight
+            if let tableView = self.superview as? UITableView {
+                UIView.animate(withDuration: Constants.wishTextViewTransformationAnimationDuration, animations: {
+                        tableView.beginUpdates()
+                        tableView.endUpdates()
+                        self.layoutIfNeeded()
+                })
+            }
+        }
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        // Убираем плейсхолдер, если пользователь начинает вводить текст
+        if textView.text == Constants.wishTextViewPlaceholderText {
+                textView.text = ""
+            textView.textColor = Constants.wishTextViewTextColor // Изменяем цвет текста на основной
+            }
+        }
+
+    func textViewDidEndEditing(_ textView: UITextView) {
+        // Возвращаем плейсхолдер, если текстовое поле пустое
+        if textView.text.isEmpty {
+            textView.text = Constants.wishTextViewPlaceholderText
+            textView.textColor = Constants.wishTextViewPlaceholderTextColor
+        }
     }
 }

@@ -88,8 +88,8 @@ extension WishCalendarViewController: UICollectionViewDelegateFlowLayout {
 
 extension WishCalendarViewController {
     @objc func didAddEventButtonPressed() {
-        let wishStoringViewController: WishStoringViewController = WishStoringViewController()
+        let addWishEventViewController: AddWishEventViewController = AddWishEventViewController()
         
-        present(wishStoringViewController, animated: true)
+        present(addWishEventViewController, animated: true)
     }
 }
