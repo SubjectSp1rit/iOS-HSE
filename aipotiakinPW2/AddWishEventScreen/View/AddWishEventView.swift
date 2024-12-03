@@ -18,6 +18,8 @@ final class AddWishEventView: UIView {
         // general to all
         static let borderWidth: CGFloat = 1.0
         static let borderColor: CGColor = UIColor.black.cgColor
+        static let leadingIndent: CGFloat = 8
+        static let topIndent: CGFloat = 8
         
         // general to textView
         static let textViewFontSize: CGFloat = 16
@@ -25,8 +27,6 @@ final class AddWishEventView: UIView {
         static let textViewPlaceholderTextColor: UIColor = .lightGray
         static let textViewBackgroundColor: UIColor = .clear
         static let textViewCornerRadius: CGFloat = 8.0
-        static let textViewLeadingIndent: CGFloat = 8
-        static let textViewTopIndent: CGFloat = 8
         static let textViewStandardHeight: CGFloat = 36
         
         // titleTextView
@@ -43,14 +43,15 @@ final class AddWishEventView: UIView {
         static let closeButtonLeadingIndent: CGFloat = 10
         static let closeButtonHeight: CGFloat = 20
         
-        // pickerViews
-        static let days = Array(1...31).map { "\($0)" }
-        static let months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
-        
+        static let loopMultiplier = 10000 // Константа для зацикливания
     }
     
     // MARK: - Variables
     weak var delegate: AddWishEventViewDelegate?
+    var days = Array(1...31).map { "\($0)" }
+    var months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+    let hours = Array(0...23).map { String(format: "%02d", $0) } // Часы от 00 до 23
+    let minutes = Array(0...59).map { String(format: "%02d", $0) } // Минуты от 00 до 59
     
     // MARK: - UI Components
     private let closeButton: UIButton = UIButton(type: .system)
@@ -71,6 +72,21 @@ final class AddWishEventView: UIView {
     }
     
     // MARK: - Public Methods
+    func configurePickerView(to date: Date) {
+        let calendar = Calendar.current
+        let currentDay = calendar.component(.day, from: date)
+        let currentMonth = calendar.component(.month, from: date)
+        let currentHour = calendar.component(.hour, from: date)
+        let currentMinute = calendar.component(.minute, from: date)
+        
+        for pickerView in [startDatePickerView, endDatePickerView] {
+            pickerView.selectRow(currentDay - 1, inComponent: 0, animated: true) // День
+            pickerView.selectRow(currentMonth - 1, inComponent: 1, animated: true) // Месяц
+            pickerView.selectRow(currentHour, inComponent: 2, animated: true) // Часы
+            pickerView.selectRow(currentMinute, inComponent: 3, animated: true) // Минуты
+        }
+    }
+    
     func configurePickerViewDelegate(_ delegate: UIPickerViewDelegate, datasource: UIPickerViewDataSource) {
         startDatePickerView.dataSource = datasource
         startDatePickerView.delegate = delegate
@@ -130,9 +146,9 @@ final class AddWishEventView: UIView {
         titleTextView.delegate = self
         titleTextView.tag = 1
         
-        titleTextView.pinTop(to: closeButton.bottomAnchor, Constants.textViewTopIndent)
+        titleTextView.pinTop(to: closeButton.bottomAnchor, Constants.topIndent)
         titleTextView.pinCenterX(to: centerXAnchor)
-        titleTextView.pinLeft(to: leadingAnchor, Constants.textViewLeadingIndent)
+        titleTextView.pinLeft(to: leadingAnchor, Constants.leadingIndent)
     }
     
     private func configureDescriptionTextView() {
@@ -152,17 +168,25 @@ final class AddWishEventView: UIView {
         descriptionTextView.delegate = self
         descriptionTextView.tag = 2
         
-        descriptionTextView.pinTop(to: titleTextView.bottomAnchor, Constants.textViewTopIndent)
+        descriptionTextView.pinTop(to: titleTextView.bottomAnchor, Constants.topIndent)
         descriptionTextView.pinCenterX(to: centerXAnchor)
-        descriptionTextView.pinLeft(to: leadingAnchor, Constants.textViewLeadingIndent)
+        descriptionTextView.pinLeft(to: leadingAnchor, Constants.leadingIndent)
     }
     
     private func configureStartDatePickerView() {
         addSubview(startDatePickerView)
+        
+        startDatePickerView.pinTop(to: descriptionTextView.bottomAnchor, Constants.topIndent)
+        startDatePickerView.pinCenterX(to: centerXAnchor)
+        startDatePickerView.pinLeft(to: leadingAnchor, Constants.leadingIndent)
     }
     
     private func configureEndDatePickerView() {
         addSubview(endDatePickerView)
+        
+        endDatePickerView.pinTop(to: startDatePickerView.bottomAnchor, Constants.topIndent)
+        endDatePickerView.pinCenterX(to: centerXAnchor)
+        endDatePickerView.pinLeft(to: leadingAnchor, Constants.leadingIndent)
     }
     
     @objc
