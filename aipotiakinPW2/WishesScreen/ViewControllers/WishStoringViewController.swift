@@ -168,6 +168,12 @@ extension WishStoringViewController: WrittenWishCellDelegate {
         addWishEventViewController.isFromWishStoringViewController = true
         
         present(addWishEventViewController, animated: true)
+        
+        // After closing screen update wishArray and reload tableView
+        addWishEventViewController.onDismiss = { [weak self] in
+            self?.wishArray = UserDefaultsManager.shared.load(forKey: Constants.wishesKey)
+            self?.wishStoringView.reloadTable()
+        }
     }
 }
 

@@ -24,6 +24,7 @@ final class AddWishEventViewController: UIViewController {
     weak var delegate: AddElementDelegate?
     var receivedTitle: String?
     var isFromWishStoringViewController: Bool = false
+    var onDismiss: (() -> Void)? // Замыкание для WishStoringViewController
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -40,6 +41,11 @@ final class AddWishEventViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         configurePickerView()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        onDismiss?()
     }
     
     // MARK: - Private Methods
@@ -104,8 +110,14 @@ extension AddWishEventViewController: AddWishEventViewDelegate {
         // Если все ок, отправляем желание в таблицу
         if (isFromWishStoringViewController) {
             var wishEventArray: [WishEventModel] = UserDefaultsManager.shared.load(forKey: "wishEventArray")
+            
+            var wishArray: [Wish] = UserDefaultsManager.shared.load(forKey: "wishArray")
+            if let index = wishArray.firstIndex(where: { $0.title == title }) {
+                wishArray.remove(at: index) }
+                
             wishEventArray.append(newWishEvent)
             UserDefaultsManager.shared.save(wishEventArray, forKey: "wishEventArray")
+            UserDefaultsManager.shared.save(wishArray, forKey: "wishArray")
             
             if isSwitchPressed {
                 calendarManager.create(eventModel: newWishEvent)
