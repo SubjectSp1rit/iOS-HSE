@@ -93,9 +93,12 @@ extension AddWishEventViewController: UIPickerViewDelegate {
     }
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if component == 1 { // Если выбран месяц, обновляем дни
+        switch component {
+        case 1:
             updateDays(forMonthIndex: pickerView.selectedRow(inComponent: 1))
             pickerView.reloadComponent(0) // Перезагружаем колонку с днями
+        default:
+            break
         }
 
         // Получаем выбранные значения
@@ -106,7 +109,10 @@ extension AddWishEventViewController: UIPickerViewDelegate {
 
         // Преобразуем в объект Date
         if let date = createDate(day: selectedDay, month: selectedMonth, year: getCurrentYear(), hour: selectedHour, minute: selectedMinute) {
-            print("Выбрано: \(date)")
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            formatter.timeZone = TimeZone.current
+            print("Выбрано: \(formatter.string(from: date))")
         } else {
             print("Некорректная дата")
         }
@@ -126,14 +132,18 @@ extension AddWishEventViewController: UIPickerViewDelegate {
     // Конвертация данных
     private func createDate(day: Int, month: Int, year: Int, hour: Int, minute: Int) -> Date? {
         var dateComponents = DateComponents()
+        dateComponents.timeZone = TimeZone.current
         dateComponents.day = day
         dateComponents.month = month
         dateComponents.year = year
         dateComponents.hour = hour
         dateComponents.minute = minute
 
-        // Используем текущий календарь для преобразования
-        return Calendar.current.date(from: dateComponents)
+        // Устанавливаем временную зону на текущую
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone.autoupdatingCurrent // Используем текущую временную зону
+
+        return calendar.date(from: dateComponents)
     }
     
     // Логика обновления дней

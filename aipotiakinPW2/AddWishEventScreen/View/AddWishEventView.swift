@@ -24,8 +24,8 @@ final class AddWishEventView: UIView {
         // general to textView
         static let textViewFontSize: CGFloat = 16
         static let textViewTextColor: UIColor = .black
-        static let textViewPlaceholderTextColor: UIColor = .lightGray
-        static let textViewBackgroundColor: UIColor = .clear
+        static let textViewPlaceholderTextColor: UIColor = .gray
+        static let textViewBackgroundColor: UIColor = .white.withAlphaComponent(0.55)
         static let textViewCornerRadius: CGFloat = 8.0
         static let textViewStandardHeight: CGFloat = 36
         
@@ -43,7 +43,21 @@ final class AddWishEventView: UIView {
         static let closeButtonLeadingIndent: CGFloat = 10
         static let closeButtonHeight: CGFloat = 20
         
-        static let loopMultiplier = 10000 // Константа для зацикливания
+        // startDateLabel
+        static let startDateLabelText: String = "Select start date"
+        static let startDateLabelTextColor: UIColor = .black
+        static let startDateLabelTextFontSize: CGFloat = 24
+        static let startDateLabelTextAlignment: NSTextAlignment = .center
+        static let startDateLabelLeadingIndent: CGFloat = 20
+        static let startDateLabelTopIndent: CGFloat = 30
+        
+        // endDateLabel
+        static let endDateLabelText: String = "Select end date"
+        static let endDateLabelTextColor: UIColor = .black
+        static let endDateLabelTextFontSize: CGFloat = 24
+        static let endDateLabelTextAlignment: NSTextAlignment = .center
+        static let endDateLabelLeadingIndent: CGFloat = 20
+        static let endDateLabelTopIndent: CGFloat = 30
     }
     
     // MARK: - Variables
@@ -59,6 +73,8 @@ final class AddWishEventView: UIView {
     private let descriptionTextView: UITextView = UITextView()
     private let startDatePickerView: UIPickerView = UIPickerView()
     private let endDatePickerView: UIPickerView = UIPickerView()
+    private let startDateLabel: UILabel = UILabel()
+    private let endDateLabel: UILabel = UILabel()
     
     // MARK: - Lifecycle
     override init(frame: CGRect) {
@@ -101,7 +117,9 @@ final class AddWishEventView: UIView {
         configureCloseButton()
         configureTitleTextView()
         configureDescriptionTextView()
+        configureStartDateLabel()
         configureStartDatePickerView()
+        configureEndDateLabel()
         configureEndDatePickerView()
     }
     
@@ -176,7 +194,7 @@ final class AddWishEventView: UIView {
     private func configureStartDatePickerView() {
         addSubview(startDatePickerView)
         
-        startDatePickerView.pinTop(to: descriptionTextView.bottomAnchor, Constants.topIndent)
+        startDatePickerView.pinTop(to: startDateLabel.bottomAnchor, Constants.topIndent)
         startDatePickerView.pinCenterX(to: centerXAnchor)
         startDatePickerView.pinLeft(to: leadingAnchor, Constants.leadingIndent)
     }
@@ -184,9 +202,35 @@ final class AddWishEventView: UIView {
     private func configureEndDatePickerView() {
         addSubview(endDatePickerView)
         
-        endDatePickerView.pinTop(to: startDatePickerView.bottomAnchor, Constants.topIndent)
+        endDatePickerView.pinTop(to: endDateLabel.bottomAnchor, Constants.topIndent)
         endDatePickerView.pinCenterX(to: centerXAnchor)
         endDatePickerView.pinLeft(to: leadingAnchor, Constants.leadingIndent)
+    }
+    
+    private func configureStartDateLabel() {
+        addSubview(startDateLabel)
+        
+        startDateLabel.text = Constants.startDateLabelText
+        startDateLabel.textColor = Constants.startDateLabelTextColor
+        startDateLabel.font = UIFont.systemFont(ofSize: Constants.startDateLabelTextFontSize)
+        startDateLabel.textAlignment = Constants.startDateLabelTextAlignment
+        
+        startDateLabel.pinCenterX(to: centerXAnchor)
+        startDateLabel.pinLeft(to: leadingAnchor, Constants.startDateLabelLeadingIndent)
+        startDateLabel.pinTop(to: descriptionTextView.bottomAnchor, Constants.startDateLabelTopIndent)
+    }
+    
+    private func configureEndDateLabel() {
+        addSubview(endDateLabel)
+        
+        endDateLabel.text = Constants.endDateLabelText
+        endDateLabel.textColor = Constants.endDateLabelTextColor
+        endDateLabel.font = UIFont.systemFont(ofSize: Constants.endDateLabelTextFontSize)
+        endDateLabel.textAlignment = Constants.endDateLabelTextAlignment
+        
+        endDateLabel.pinCenterX(to: centerXAnchor)
+        endDateLabel.pinLeft(to: leadingAnchor, Constants.endDateLabelLeadingIndent)
+        endDateLabel.pinTop(to: startDatePickerView.bottomAnchor, Constants.endDateLabelTopIndent)
     }
     
     @objc

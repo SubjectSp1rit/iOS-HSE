@@ -252,8 +252,8 @@ final class WishMakerView: UIView {
     private func updateButtonsBackgroundColor(to color: UIColor) {
         // Если цвет белый - делаем текст кнопок черным, иначе цвет фона
         if checkIfColorIsWhite(color) {
-            addWishButton.setTitleColor(.black, for: .normal)
-            scheduleWishButton.setTitleColor(.black, for: .normal)
+            addWishButton.setTitleColor(Constants.addWishButtonTitleColor, for: .normal)
+            scheduleWishButton.setTitleColor(Constants.scheduleWishButtonTitleColor, for: .normal)
         } else {
             addWishButton.setTitleColor(color, for: .normal)
             scheduleWishButton.setTitleColor(color, for: .normal)

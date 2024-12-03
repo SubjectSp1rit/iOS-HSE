@@ -27,13 +27,13 @@ final class AddWishCell: UITableViewCell {
         // wishTextView
         static let wishTextViewFontSize: CGFloat = 16
         static let wishTextViewTextColor: UIColor = .black
-        static let wishTextViewBackgroundColor: UIColor = .clear
+        static let wishTextViewBackgroundColor: UIColor = .white.withAlphaComponent(0.3)
         static let wishTextViewCornerRadius: CGFloat = 8.0
         static let wishTextViewLeadingIndent: CGFloat = 8
         static let wishTextViewTopIndent: CGFloat = 8
         static let wishTextViewStandardHeight: CGFloat = 36
         static let wishTextViewPlaceholderText: String = "Введите свое самое сокровенное желание!"
-        static let wishTextViewPlaceholderTextColor: UIColor = .lightGray
+        static let wishTextViewPlaceholderTextColor: UIColor = .gray
         
         // wishAddButton
         static let wishAddButtonTitle: String = "Add wish"
@@ -171,7 +171,7 @@ extension AddWishCell: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         // Убираем плейсхолдер, если пользователь начинает вводить текст
         if textView.text == Constants.wishTextViewPlaceholderText {
-                textView.text = ""
+            textView.text = ""
             textView.textColor = Constants.wishTextViewTextColor // Изменяем цвет текста на основной
             }
         }
