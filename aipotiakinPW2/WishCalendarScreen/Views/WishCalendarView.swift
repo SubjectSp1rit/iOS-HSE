@@ -22,6 +22,9 @@ final class WishCalendarView: UIView {
         static let layoutMinimumInteritemSpacing: CGFloat = 0
         static let layoutMinimumLineSpacing: CGFloat = 0
         static let contentInset: CGFloat = 10
+        
+        // navbar
+        static let navbarTitle: String = "Schedule"
     }
     
     // MARK: - UI Components
@@ -60,10 +63,12 @@ final class WishCalendarView: UIView {
         navigationItem.rightBarButtonItem = addEventButton
     }
     
-    func configureBar(in navigationBar: UINavigationBar?) {
+    func configureBar(in navigationBar: UINavigationBar?, vc: WishCalendarViewController) {
         navigationBar?.isTranslucent = true
         navigationBar?.setBackgroundImage(UIImage(), for: .default)
         navigationBar?.shadowImage = UIImage()
+        
+        vc.title = Constants.navbarTitle
     }
     
     func configureNoWishesImage(mode: String) {

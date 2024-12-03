@@ -46,7 +46,7 @@ final class WishCalendarViewController: UIViewController {
         
         // Настраиваем бар
         wishCalendarView.configureAddEventButton(in: navigationItem, self)
-        wishCalendarView.configureBar(in: self.navigationController?.navigationBar)
+        wishCalendarView.configureBar(in: self.navigationController?.navigationBar, vc: self)
         wishCalendarView.addEventButton.action = #selector(didAddEventButtonPressed)
         
         // Ставим картинку, если желаний нет

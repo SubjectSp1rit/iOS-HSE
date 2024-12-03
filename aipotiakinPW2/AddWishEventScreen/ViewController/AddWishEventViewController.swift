@@ -97,7 +97,17 @@ extension AddWishEventViewController: AddWishEventViewDelegate {
         )
         // Если все ок, отправляем желание в таблицу
         delegate?.didAddElement(newWishEvent, isSwitchPressed)
-        dismiss(animated: true)
+        
+        if isSwitchPressed {
+            let alert = UIAlertController(title: "Success", message: "The event has been successfully added to the calendar!", preferredStyle: .alert)
+            let action = UIAlertAction(title: "OK", style: .default) { _ in
+                self.dismiss(animated: true)
+            }
+            alert.addAction(action)
+            present(alert, animated: true)
+        } else {
+            dismiss(animated: true)
+        }
     }
     
     func showError(message: String) {
