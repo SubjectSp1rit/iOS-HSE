@@ -27,6 +27,8 @@ final class WishCalendarViewController: UIViewController {
         super.viewDidLoad()
         
         loadDataFromDefaults()
+        // Удаляем все старые желания (чей срок прошел)
+        deleteOldWishEvents()
         setView(to: wishCalendarView)
         wishCalendarView.configureCollectionViewDelegate(self, dataSource: self)
     }
@@ -57,6 +59,12 @@ final class WishCalendarViewController: UIViewController {
     
     private func saveChangesToDefaults() {
         UserDefaultsManager.shared.save(wishEventArray, forKey: Constants.wishesKey)
+    }
+    
+    private func deleteOldWishEvents() {
+        let currentDate = Date()
+        
+        wishEventArray.removeAll { $0.endDate < currentDate }
     }
 }
 
