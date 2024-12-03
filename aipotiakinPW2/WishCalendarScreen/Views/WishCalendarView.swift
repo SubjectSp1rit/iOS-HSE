@@ -11,14 +11,26 @@ import UIKit
 final class WishCalendarView: UIView {
     // MARK: - Constants
     private enum Constants {
+        // addEventButton
+        static let addEventButtonImageName: String = "plus"
         
+        // noWishesImage
+        static let noWishesImageName: String = "noWishes"
+        static let noWishesImageLeadingIndent: CGFloat = 50
+        
+        // collectionView
+        static let layoutMinimumInteritemSpacing: CGFloat = 0
+        static let layoutMinimumLineSpacing: CGFloat = 0
+        static let contentInset: CGFloat = 10
     }
     
+    // MARK: - UI Components
     private let collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewFlowLayout()
     )
     let addEventButton: UIBarButtonItem = UIBarButtonItem()
+    let noWishesImage: UIImageView = UIImageView()
     
     // MARK: - Lifecycle
     override init(frame: CGRect) {
@@ -42,7 +54,7 @@ final class WishCalendarView: UIView {
     }
     
     func configureAddEventButton(in navigationItem: UINavigationItem, _ target: WishCalendarViewController) {
-        addEventButton.image = UIImage(systemName: "plus")
+        addEventButton.image = UIImage(systemName: Constants.addEventButtonImageName)
         addEventButton.style = .plain
         addEventButton.target = target
         navigationItem.rightBarButtonItem = addEventButton
@@ -52,6 +64,16 @@ final class WishCalendarView: UIView {
         navigationBar?.isTranslucent = true
         navigationBar?.setBackgroundImage(UIImage(), for: .default)
         navigationBar?.shadowImage = UIImage()
+    }
+    
+    func configureNoWishesImage() {
+        addSubview(noWishesImage)
+        
+        noWishesImage.contentMode = .scaleAspectFit
+        noWishesImage.image = UIImage(named: Constants.noWishesImageName)
+        noWishesImage.pinCenterX(to: centerXAnchor)
+        noWishesImage.pinCenterY(to: centerYAnchor)
+        noWishesImage.pinLeft(to: leadingAnchor, Constants.noWishesImageLeadingIndent, .grOE) // Гарантируем что отступ от левого края >= indent
     }
     
     // MARK: - Private methods
@@ -64,12 +86,12 @@ final class WishCalendarView: UIView {
         collectionView.backgroundColor = .clear
         collectionView.alwaysBounceVertical = true
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        collectionView.contentInset = UIEdgeInsets(top: Constants.contentInset, left: Constants.contentInset, bottom: Constants.contentInset, right: Constants.contentInset)
         collectionView.clipsToBounds = true
         
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.minimumInteritemSpacing = 0
-            layout.minimumLineSpacing = 0
+            layout.minimumInteritemSpacing = Constants.layoutMinimumInteritemSpacing
+            layout.minimumLineSpacing = Constants.layoutMinimumLineSpacing
             
             layout.invalidateLayout()
         }

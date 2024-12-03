@@ -2,11 +2,10 @@
 //  WishEventModel.swift
 //  aipotiakinPW2
 //
-//  Created by Arseniy on 02.12.2024.
+//  Created by Arseniy on 03.12.2024.
 //
 
 import Foundation
-import UIKit
 
 struct WishEventModel {
     var title: String

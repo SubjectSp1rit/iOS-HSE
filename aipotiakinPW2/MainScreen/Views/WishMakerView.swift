@@ -131,12 +131,14 @@ final class WishMakerView: UIView {
         static let blueButtonBackgroundColor: UIColor = .blue
         
         // addWishButton
+        static let addWishButtinBackgroundColor: UIColor = .white
         static let addWishButtonBottomIndent: CGFloat = 10
         static let addWishButtonLeadingIndent: CGFloat = 20
         static let addWishButtonTitleColor: UIColor = .systemPink
         static let addWishButtonTitle: String = "My wishes"
         
         // scheduleWishButton
+        static let scheduleWishButtinBackgroundColor: UIColor = .white
         static let scheduleWishButtonBottomIndent: CGFloat = 40
         static let scheduleWishButtonLeadingIndent: CGFloat = 20
         static let scheduleWishButtonTitleColor: UIColor = .systemPink
@@ -206,14 +208,14 @@ final class WishMakerView: UIView {
         }
     }
     
-    // Enables all buttons from the list
+    /// Enables all buttons from the list
     private func enableButtons(_ buttons: [UIButton]) {
         for button in buttons {
             button.isEnabled = true
         }
     }
     
-    // Updates backgroung color based on the given argument
+    /// Updates backgroung color based on the given argument
     private func updateBackgroundColor(to updateType: String) {
         switch updateType {
         case "Red":
@@ -243,8 +245,37 @@ final class WishMakerView: UIView {
         )
         self.backgroundColor = newBackgroundColor
         updateHexLabelCode()
+        updateButtonsBackgroundColor(to: newBackgroundColor)
     }
     
+    /// Обновляет цвет фона кнопок на цвет фона приложения
+    private func updateButtonsBackgroundColor(to color: UIColor) {
+        // Если цвет белый - делаем текст кнопок черным, иначе цвет фона
+        if checkIfColorIsWhite(color) {
+            addWishButton.setTitleColor(.black, for: .normal)
+            scheduleWishButton.setTitleColor(.black, for: .normal)
+        } else {
+            addWishButton.setTitleColor(color, for: .normal)
+            scheduleWishButton.setTitleColor(color, for: .normal)
+        }
+    }
+    
+    /// Проверяет является ли переданный цвет белым
+    private func checkIfColorIsWhite(_ color: UIColor) -> Bool {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        if color.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
+            // Проверяем, что значения равны 1.0 (белый цвет) и альфа равна 1.0
+            return red == 1.0 && green == 1.0 && blue == 1.0 && alpha == 1.0
+        }
+        
+        return false
+    }
+    
+    /// Возвращает текущий цвет фона
     private func getCurrentBackgroundColor() -> UIColor {
         return UIColor(
             red: CGFloat(self.sliderRed.slider.value),
@@ -272,7 +303,6 @@ final class WishMakerView: UIView {
         let hexFormat: String = "#%02X%02X%02X"
         return String(format: hexFormat, r, g, b)
     }
-    
     private func configureUI() {
         backgroundColor = .white
         configureScheduleWishButton()
@@ -290,7 +320,7 @@ final class WishMakerView: UIView {
         addWishButton.pinCenterX(to: centerXAnchor)
         addWishButton.pinLeft(to: leadingAnchor, Constants.addWishButtonLeadingIndent)
         
-        addWishButton.backgroundColor = Constants.buttonBackgroundColor
+        addWishButton.backgroundColor = Constants.addWishButtinBackgroundColor
         addWishButton.setTitleColor(Constants.addWishButtonTitleColor, for: .normal)
         addWishButton.setTitle(Constants.addWishButtonTitle, for: .normal)
         
@@ -306,7 +336,7 @@ final class WishMakerView: UIView {
         scheduleWishButton.pinCenterX(to: centerXAnchor)
         scheduleWishButton.pinLeft(to: leadingAnchor, Constants.scheduleWishButtonLeadingIndent)
         
-        scheduleWishButton.backgroundColor = Constants.buttonBackgroundColor
+        scheduleWishButton.backgroundColor = Constants.scheduleWishButtinBackgroundColor
         scheduleWishButton.setTitleColor(Constants.scheduleWishButtonTitleColor, for: .normal)
         scheduleWishButton.setTitle(Constants.scheduleWishButtonTitle, for: .normal)
         
@@ -396,6 +426,7 @@ final class WishMakerView: UIView {
                 alpha: Constants.backgroundAlphaTransparency
             )
             self?.updateHexLabelCode()
+            self?.updateButtonsBackgroundColor(to: (self?.getCurrentBackgroundColor())!)
         }
         
         sliderGreen.valueChanged = { [weak self] value in
@@ -406,6 +437,7 @@ final class WishMakerView: UIView {
                 alpha: Constants.backgroundAlphaTransparency
             )
             self?.updateHexLabelCode()
+            self?.updateButtonsBackgroundColor(to: (self?.getCurrentBackgroundColor())!)
         }
         
         sliderBlue.valueChanged = { [weak self] value in
@@ -416,6 +448,7 @@ final class WishMakerView: UIView {
                 alpha: Constants.backgroundAlphaTransparency
             )
             self?.updateHexLabelCode()
+            self?.updateButtonsBackgroundColor(to: (self?.getCurrentBackgroundColor())!)
         }
     }
     

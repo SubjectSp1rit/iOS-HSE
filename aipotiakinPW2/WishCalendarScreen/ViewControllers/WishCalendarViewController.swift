@@ -14,9 +14,12 @@ final class WishCalendarViewController: UIViewController {
 
     }
     
-    var bgColor: UIColor?
-    
+    // MARK: - UI Components
     private let wishCalendarView = WishCalendarView()
+    
+    // MARK: - Variables
+    var bgColor: UIColor?
+    private let wishEventArray: [WishEventModel] = []
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -39,6 +42,11 @@ final class WishCalendarViewController: UIViewController {
         wishCalendarView.configureAddEventButton(in: navigationItem, self)
         wishCalendarView.configureBar(in: self.navigationController?.navigationBar)
         wishCalendarView.addEventButton.action = #selector(didAddEventButtonPressed)
+        
+        // Ставим картинку, если желаний нет
+        if (wishEventArray.isEmpty) {
+            wishCalendarView.configureNoWishesImage()
+        }
     }
 }
 
@@ -50,7 +58,7 @@ extension WishCalendarViewController: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 extension WishCalendarViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return wishEventArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -58,14 +66,7 @@ extension WishCalendarViewController: UICollectionViewDataSource {
         
         guard let wishEventCell = cell as? WishEventCell else { return cell }
         
-        wishEventCell.configure(
-            with: WishEventModel(
-                title: "Test",
-                description: "Test desc",
-                startDate: "Start",
-                endDate: "End"
-            )
-        )
+        wishEventCell.configure(with: wishEventArray[indexPath.row])
         
         return wishEventCell
     }
@@ -82,7 +83,6 @@ extension WishCalendarViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
-        print("Cell tapped at index \(indexPath.item)")
     }
 }
 
