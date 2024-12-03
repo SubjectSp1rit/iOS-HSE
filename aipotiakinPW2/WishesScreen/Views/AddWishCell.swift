@@ -32,7 +32,7 @@ final class AddWishCell: UITableViewCell {
         static let wishTextViewLeadingIndent: CGFloat = 8
         static let wishTextViewTopIndent: CGFloat = 8
         static let wishTextViewStandardHeight: CGFloat = 36
-        static let wishTextViewPlaceholderText: String = "Введите свое самое сокровенное желание!"
+        static let wishTextViewPlaceholderText: String = "Enter your deepest wish!"
         static let wishTextViewPlaceholderTextColor: UIColor = .gray
         
         // wishAddButton

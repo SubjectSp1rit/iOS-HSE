@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+protocol WishEventCellDelegate: AnyObject {
+    func didDeleteWishEventButtonPressed(title: String)
+}
+
 final class WishEventCell: UICollectionViewCell {
     // MARK: - Constants
     private enum Constants {
@@ -39,21 +43,33 @@ final class WishEventCell: UICollectionViewCell {
         static let endDateLabelBottomIndent: CGFloat = 8
         static let endDateLabelTrailingIndent: CGFloat = 8
         static let endDateLabelFontSize: CGFloat = 12
+        
+        // deleteWishEventButton
+        static let deleteWishEventButtonTrailingIndent: CGFloat = 8
+        static let deleteWishEventButtonImageName: String = "binIcon"
+        static let deleteWishEventButtonTintColor: UIColor = .systemRed
+        static let deleteWishEventButtonHeight: CGFloat = 28
+        static let deleteWishEventButtonWidth: CGFloat = 28
     }
     
     static let reuseIdentifier: String = "WishEventCell"
     
-    private let wrapView: UIView = UIView()
+    private let wrap: UIView = UIView()
     private let titleLabel: UILabel = UILabel()
     private let descriptionLabel: UILabel = UILabel()
     private let startDateLabel: UILabel = UILabel()
     private let endDateLabel: UILabel = UILabel()
+    private let deleteWishEventButton: UIButton = UIButton(type: .system)
+    
+    // MARK: - Variables
+    weak var delegate: WishEventCellDelegate?
     
     // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         configureWrap()
+        configureDeleteWishEventButton()
         configureTitleLabel()
         configureStartDateLabel()
         configureEndDateLabel()
@@ -79,50 +95,68 @@ final class WishEventCell: UICollectionViewCell {
     
     // MARK: - UI Configuration
     private func configureWrap() {
-        addSubview(wrapView)
+        addSubview(wrap)
         
-        wrapView.pin(to: self, Constants.wrapIndent)
-        wrapView.layer.cornerRadius = Constants.wrapCornerRadius
-        wrapView.backgroundColor = Constants.wrapBackgroundColor
+        wrap.pin(to: self, Constants.wrapIndent)
+        wrap.layer.cornerRadius = Constants.wrapCornerRadius
+        wrap.backgroundColor = Constants.wrapBackgroundColor
+    }
+    
+    private func configureDeleteWishEventButton() {
+        wrap.addSubview(deleteWishEventButton)
+        
+        deleteWishEventButton.setImage(UIImage(named: Constants.deleteWishEventButtonImageName), for: .normal)
+        deleteWishEventButton.tintColor = Constants.deleteWishEventButtonTintColor
+        deleteWishEventButton.pinRight(to: wrap.trailingAnchor, Constants.deleteWishEventButtonTrailingIndent)
+        deleteWishEventButton.pinCenterY(to: wrap.centerYAnchor)
+        deleteWishEventButton.setHeight(Constants.deleteWishEventButtonHeight)
+        deleteWishEventButton.setWidth(Constants.deleteWishEventButtonWidth)
+        deleteWishEventButton.addTarget(self, action: #selector(deleteWishEventButtonPressed), for: .touchUpInside)
     }
     
     private func configureTitleLabel() {
-        wrapView.addSubview(titleLabel)
+        wrap.addSubview(titleLabel)
         
         titleLabel.textColor = Constants.labelTextColor
-        titleLabel.pinTop(to: wrapView.topAnchor, Constants.titleLabelTopIndent)
-        titleLabel.pinLeft(to: wrapView.leadingAnchor, Constants.titleLabelLeadingIndent)
+        titleLabel.pinTop(to: wrap.topAnchor, Constants.titleLabelTopIndent)
+        titleLabel.pinLeft(to: wrap.leadingAnchor, Constants.titleLabelLeadingIndent)
         titleLabel.font = UIFont.systemFont(ofSize: Constants.titleLabelFontSize)
         titleLabel.sizeToFit()
     }
     
     private func configureDescriptionLabel() {
-        wrapView.addSubview(descriptionLabel)
+        wrap.addSubview(descriptionLabel)
         
         descriptionLabel.textColor = Constants.labelTextColor
         descriptionLabel.pinTop(to: titleLabel.bottomAnchor, Constants.descriptionLabelTopIndent)
-        descriptionLabel.pinLeft(to: wrapView.leadingAnchor, Constants.descriptionLabelLeadingIndent)
-        descriptionLabel.pinBottom(to: wrapView.bottomAnchor, Constants.descriptionLabelBottomIndent)
+        descriptionLabel.pinLeft(to: wrap.leadingAnchor, Constants.descriptionLabelLeadingIndent)
+        descriptionLabel.pinBottom(to: wrap.bottomAnchor, Constants.descriptionLabelBottomIndent)
         descriptionLabel.font = UIFont.systemFont(ofSize: Constants.descriptionLabelFontSize)
     }
     
     private func configureStartDateLabel() {
-        wrapView.addSubview(startDateLabel)
+        wrap.addSubview(startDateLabel)
         
         startDateLabel.textColor = Constants.labelTextColor
-        startDateLabel.pinTop(to: wrapView.topAnchor, Constants.startDateLabelTopIndent)
-        startDateLabel.pinRight(to: wrapView.trailingAnchor, Constants.startDateLabelTrailingIndent)
+        startDateLabel.pinTop(to: wrap.topAnchor, Constants.startDateLabelTopIndent)
+        startDateLabel.pinRight(to: wrap.trailingAnchor, Constants.startDateLabelTrailingIndent)
         startDateLabel.font = UIFont.systemFont(ofSize: Constants.startDateLabelFontSize)
         startDateLabel.sizeToFit()
     }
     
     private func configureEndDateLabel() {
-        wrapView.addSubview(endDateLabel)
+        wrap.addSubview(endDateLabel)
         
         endDateLabel.textColor = Constants.labelTextColor
-        endDateLabel.pinBottom(to: wrapView.bottomAnchor, Constants.endDateLabelBottomIndent)
-        endDateLabel.pinRight(to: wrapView.trailingAnchor, Constants.endDateLabelTrailingIndent)
+        endDateLabel.pinBottom(to: wrap.bottomAnchor, Constants.endDateLabelBottomIndent)
+        endDateLabel.pinRight(to: wrap.trailingAnchor, Constants.endDateLabelTrailingIndent)
         endDateLabel.font = UIFont.systemFont(ofSize: Constants.endDateLabelFontSize)
         endDateLabel.sizeToFit()
+    }
+    
+    @objc
+    private func deleteWishEventButtonPressed() {
+        guard let titleLabelText = titleLabel.text else { return }
+        delegate?.didDeleteWishEventButtonPressed(title: titleLabelText)
     }
 }

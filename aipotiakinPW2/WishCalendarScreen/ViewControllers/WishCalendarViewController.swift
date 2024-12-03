@@ -28,7 +28,7 @@ final class WishCalendarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //loadDataFromDefaults()
+        loadDataFromDefaults()
         // Удаляем все старые желания (чей срок прошел)
         deleteOldWishEvents()
         setView(to: wishCalendarView)
@@ -86,6 +86,7 @@ extension WishCalendarViewController: UICollectionViewDataSource {
         
         guard let wishEventCell = cell as? WishEventCell else { return cell }
         
+        wishEventCell.delegate = self
         wishEventCell.configure(with: wishEventArray[indexPath.row])
         
         return wishEventCell
@@ -106,6 +107,7 @@ extension WishCalendarViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+// MARK: - AddElementDelegate
 extension WishCalendarViewController: AddElementDelegate {
     @objc func didAddEventButtonPressed() {
         let addWishEventViewController: AddWishEventViewController = AddWishEventViewController()
@@ -113,18 +115,47 @@ extension WishCalendarViewController: AddElementDelegate {
         present(addWishEventViewController, animated: true)
     }
     
-    func didAddElement(_ element: WishEventModel) {
+    func didAddElement(_ element: WishEventModel, _ isSwitchPressed: Bool) {
         wishEventArray.append(element)
         wishCalendarView.reloadTable()
         saveChangesToDefaults()
         wishCalendarView.configureNoWishesImage(mode: "delete")
         
-        let isEventCreated = calendarManager.create(eventModel: element)
-
-        if isEventCreated {
-            print("Событие успешно добавлено в календарь!")
-        } else {
-            print("Не удалось добавить событие в календарь.")
+        // Если пользователь нажал переключатель - добавляем событие в календарь
+        if isSwitchPressed {
+            calendarManager.create(eventModel: element)
         }
     }
+}
+
+// MARK: - WishEventCellDelegate
+extension WishCalendarViewController: WishEventCellDelegate {
+    func didDeleteWishEventButtonPressed(title: String) {
+        let alertController = UIAlertController(
+            title: "Confirm Deletion",
+            message: "Are you sure you want to delete \"\(title)\"?",
+            preferredStyle: .alert
+        )
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            if let index = wishEventArray.firstIndex(where: { $0.title == title }) {
+                wishEventArray.remove(at: index)
+                wishCalendarView.reloadTable()
+                saveChangesToDefaults()
+                if (wishEventArray.isEmpty) {
+                    wishCalendarView.configureNoWishesImage(mode: "add")
+                }
+            }
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alertController.addAction(deleteAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    
 }

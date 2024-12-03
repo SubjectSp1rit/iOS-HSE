@@ -11,6 +11,7 @@ import EventKit
 final class CalendarEventManager: CalendarManaging {
     private let eventStore: EKEventStore = EKEventStore()
     
+    @discardableResult
     func create(eventModel: WishEventModel) -> Bool {
         var result: Bool = false
         let group = DispatchGroup()

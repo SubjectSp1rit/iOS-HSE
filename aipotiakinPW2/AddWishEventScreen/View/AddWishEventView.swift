@@ -10,7 +10,7 @@ import UIKit
 
 protocol AddWishEventViewDelegate: AnyObject {
     func didCloseButtonPressed()
-    func didSaveButtonPressed(title: String, description: String, startDatePickerView: UIPickerView, endDatePickerView: UIPickerView)
+    func didSaveButtonPressed(title: String, description: String, startDatePickerView: UIPickerView, endDatePickerView: UIPickerView, isSwitchPressed: Bool)
     func showError(message: String)
 }
 
@@ -32,10 +32,10 @@ final class AddWishEventView: UIView {
         static let textViewStandardHeight: CGFloat = 36
         
         // titleTextView
-        static let titleTextViewPlaceholderText: String = "Введите заголовок"
+        static let titleTextViewPlaceholderText: String = "Enter the title"
         
         // descriptionTextView
-        static let descriptionTextViewPlaceholderText: String = "Введите описание"
+        static let descriptionTextViewPlaceholderText: String = "Enter the description (optional)"
         
         // closeButton
         static let closeButtonBackgroundColor: UIColor = .clear
@@ -69,6 +69,17 @@ final class AddWishEventView: UIView {
         static let endDateLabelLeadingIndent: CGFloat = 20
         static let endDateLabelTopIndent: CGFloat = 30
         
+        // calendarSwitchLabel
+        static let calendarSwitchLabelText: String = "Would you like to add event to calendar?"
+        static let calendarSwitchLabelTextColor: UIColor = .black
+        static let calendarSwitchLabelTextFontSize: CGFloat = 16
+        static let calendarSwitchLabelTextAlignment: NSTextAlignment = .center
+        static let calendarSwitchLabelLeadingIndent: CGFloat = 20
+        static let calendarSwitchLabelTopIndent: CGFloat = 30
+        
+        // calendarSwitch
+        static let calendarSwitchTopIndent: CGFloat = 20
+        
         // error
         static let errorTitle: String = "Title field can't be empty"
     }
@@ -76,7 +87,7 @@ final class AddWishEventView: UIView {
     // MARK: - Variables
     weak var delegate: AddWishEventViewDelegate?
     var days = Array(1...31).map { "\($0)" }
-    var months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     let hours = Array(0...23).map { String(format: "%02d", $0) } // Часы от 00 до 23
     let minutes = Array(0...59).map { String(format: "%02d", $0) } // Минуты от 00 до 59
     
@@ -89,6 +100,8 @@ final class AddWishEventView: UIView {
     private let endDatePickerView: UIPickerView = UIPickerView()
     private let startDateLabel: UILabel = UILabel()
     private let endDateLabel: UILabel = UILabel()
+    private let calendarSwitchLabel: UILabel = UILabel()
+    private let calendarSwitch: UISwitch = UISwitch()
     
     // MARK: - Lifecycle
     override init(frame: CGRect) {
@@ -136,6 +149,8 @@ final class AddWishEventView: UIView {
         configureStartDatePickerView()
         configureEndDateLabel()
         configureEndDatePickerView()
+        configureCalendarSwitchLabel()
+        configureCalendarSwitch()
     }
     
     private func configureBackground() {
@@ -259,6 +274,28 @@ final class AddWishEventView: UIView {
         endDateLabel.pinTop(to: startDatePickerView.bottomAnchor, Constants.endDateLabelTopIndent)
     }
     
+    private func configureCalendarSwitchLabel() {
+        addSubview(calendarSwitchLabel)
+        
+        calendarSwitchLabel.text = Constants.calendarSwitchLabelText
+        calendarSwitchLabel.textColor = Constants.calendarSwitchLabelTextColor
+        calendarSwitchLabel.font = UIFont.systemFont(ofSize: Constants.calendarSwitchLabelTextFontSize)
+        calendarSwitchLabel.textAlignment = Constants.calendarSwitchLabelTextAlignment
+        
+        calendarSwitchLabel.pinCenterX(to: centerXAnchor)
+        calendarSwitchLabel.pinLeft(to: leadingAnchor, Constants.calendarSwitchLabelLeadingIndent)
+        calendarSwitchLabel.pinTop(to: endDatePickerView.bottomAnchor, Constants.calendarSwitchLabelTopIndent)
+    }
+    
+    private func configureCalendarSwitch() {
+        addSubview(calendarSwitch)
+        
+        calendarSwitch.isOn = false
+        
+        calendarSwitch.pinCenterX(to: centerXAnchor)
+        calendarSwitch.pinTop(to: calendarSwitchLabel.bottomAnchor, Constants.calendarSwitchTopIndent)
+    }
+    
     @objc
     private func closeButtonPressed() {
         delegate?.didCloseButtonPressed()
@@ -275,7 +312,8 @@ final class AddWishEventView: UIView {
         // Формируем данные, которые возвращаем
         let returnText = titleTextView.text
         let returnDescription = descriptionTextView.text == Constants.descriptionTextViewPlaceholderText ? "" : descriptionTextView.text
-        delegate?.didSaveButtonPressed(title: returnText!, description: returnDescription!, startDatePickerView: startDatePickerView, endDatePickerView: endDatePickerView)
+        
+        delegate?.didSaveButtonPressed(title: returnText!, description: returnDescription!, startDatePickerView: startDatePickerView, endDatePickerView: endDatePickerView, isSwitchPressed: calendarSwitch.isOn)
         
     }
 }

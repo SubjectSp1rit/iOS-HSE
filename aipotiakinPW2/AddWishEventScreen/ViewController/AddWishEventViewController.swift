@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 protocol AddElementDelegate: AnyObject {
-    func didAddElement(_ element: WishEventModel)
+    func didAddElement(_ element: WishEventModel, _ isSwitchPressed: Bool)
 }
 
 final class AddWishEventViewController: UIViewController {
@@ -80,7 +80,7 @@ extension AddWishEventViewController: AddWishEventViewDelegate {
         dismiss(animated: true)
     }
     
-    func didSaveButtonPressed(title: String, description: String, startDatePickerView: UIPickerView, endDatePickerView: UIPickerView) {
+    func didSaveButtonPressed(title: String, description: String, startDatePickerView: UIPickerView, endDatePickerView: UIPickerView, isSwitchPressed: Bool) {
         let startDate: Date = createDateFromPickerView(startDatePickerView)
         let endDate: Date = createDateFromPickerView(endDatePickerView)
         
@@ -96,7 +96,7 @@ extension AddWishEventViewController: AddWishEventViewDelegate {
             endDate: endDate
         )
         // Если все ок, отправляем желание в таблицу
-        delegate?.didAddElement(newWishEvent)
+        delegate?.didAddElement(newWishEvent, isSwitchPressed)
         dismiss(animated: true)
     }
     
@@ -143,41 +143,13 @@ extension AddWishEventViewController: UIPickerViewDelegate {
             return nil
         }
     }
-
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        switch component {
-        case 1:
-            updateDays(forMonthIndex: pickerView.selectedRow(inComponent: 1))
-            pickerView.reloadComponent(0) // Перезагружаем колонку с днями
-        default:
-            break
-        }
-
-        // Получаем выбранные значения
-        let selectedDay = pickerView.selectedRow(inComponent: 0) + 1
-        let selectedMonth = pickerView.selectedRow(inComponent: 1) + 1
-        let selectedHour = pickerView.selectedRow(inComponent: 2)
-        let selectedMinute = pickerView.selectedRow(inComponent: 3)
-
-        // Преобразуем в объект Date
-        if let date = createDate(day: selectedDay, month: selectedMonth, year: getCurrentYear(), hour: selectedHour, minute: selectedMinute) {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            formatter.timeZone = TimeZone.current
-            print("Выбрано: \(formatter.string(from: date))")
-        } else {
-            print("Некорректная дата")
-        }
-    }
     
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
             switch component {
-            case 0:
-                return 30
-            case 2, 3:
+            case 0, 2, 3:
                 return 50 // Ширина колонок для часов и минут
             default:
-                return 120 // Ширина для остальных колонок
+                return 130 // Ширина для остальных колонок
             }
     }
     
