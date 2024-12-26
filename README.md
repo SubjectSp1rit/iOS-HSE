@@ -1,6 +1,24 @@
 <h1 align="center">PW5</h1>
 
 <p align="center">
+  Пока новости не загрузились - вместо них располагаются мерцающие ячейки  
+  <br>
+  <img src="static/11.gif" width="300px">  
+</p>
+
+<p align="center">
+  Анимация обновления новостей  
+  <br>
+  <img src="static/12.gif" width="300px">  
+</p>
+
+<p align="center">
+  Пока картинка новости не загрузилась - вместо нее располагается мерцающая вьюшка  
+  <br>
+  <img src="static/13.gif" width="300px">  
+</p>
+
+<p align="center">
   Главный экран  
   <br>
   <img src="static/1.png" width="300px">  
@@ -58,22 +76,4 @@
   Обновление новостей при свайпе вниз или при нажатии кнопки  
   <br>
   <img src="static/10.png" width="300px">  
-</p>
-
-<p align="center">
-  Пока новости не загрузились - вместо них располагаются мерцающие ячейки  
-  <br>
-  <img src="static/11.gif" width="300px">  
-</p>
-
-<p align="center">
-  Анимация обновления новостей  
-  <br>
-  <img src="static/12.gif" width="300px">  
-</p>
-
-<p align="center">
-  Пока картинка новости не загрузилась - вместо нее располагается мерцающая вьюшка  
-  <br>
-  <img src="static/13.gif" width="300px">  
 </p>
