@@ -1,7 +1,7 @@
 <h1 align="center">PW5</h1>
 <p align="center">
   Главный экран  
-  <img src="static/1.png">  
+  <img src="static/1.png" width="300px">  
 
   Экран сохраненных новостей  
   <img src="static/2.png">  
